@@ -9,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate replace to="/login" />} />
         <Route path="/login" loader={LoadingUI} element={<LoginPage />} />
+        {/* <Route path="/signup" loader={LoadingUI} element={<SignupPage />}/> */}
         <Route path="/signup" loader={LoadingUI} element={<SignupPage />}/>
         <Route path="/dashboard/:role" />
       </Routes>
