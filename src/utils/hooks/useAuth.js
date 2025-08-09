@@ -8,30 +8,73 @@ export function useAuth() {
     const pathname = location.pathname;
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loadingSession, setLoadingSession] = useState(true);
+    const [sessionUserData, setSessionUserData] = useState({
+        display_name: "",
+        email: "",
+        email_verified: false,
+        phone_verified: false,
+        role: "vendor",
+        sub: "23516259-b026-4475-8488-3ee3f1e9b997"
+    });
+    const [logoutState, setLogoutState] = useState({
+        loading: false,
+        failed: false,
+        message: ""
+    });
 
     useEffect(() => {
         // This effect will only run client-side
         async function checkAuth() {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
+                console.log(session)
                 if (!session) {
-                    if (pathname === "/") setLoadingSession(false);
-                    navigate("/");
+                    if (pathname === "/login") setLoadingSession(false);
+                    if (pathname.includes("dashboard")) navigate("/login");
                 } else {
                     setIsAuthenticated(true);
-                    setLoadingSession(false);
+                    setSessionUserData(session.user.user_metadata);
 
                     // If there's an active session and user is on login page, move user to dashboard
-                    if (pathname === "/") navigate("/dashboard");
+                    if (pathname === "/" || pathname === "/login") navigate("/dashboard/vendor");
                 }
             } catch (error) {
                 console.error("Auth check error:", error);
-                setLoading(false);
+                setIsAuthenticated(false);
+            } finally {
+                setLoadingSession(false);
             }
         }
         
         checkAuth();
     }, [navigate, pathname]);
 
-    return { isAuthenticated, loadingSession };
+    const logout = async () => {
+        setLogoutState(prev => ({...prev, loading: true}));
+        const { error } = await supabase.auth.signOut();
+
+        if (!error) {
+            setLogoutState({
+                loading: false,
+                failed: false,
+                message: "You have logged out successfully."
+            });
+        } else {
+            setLogoutState({
+                loading: false,
+                failed: true,
+                message: "Failed to log user out."
+            });
+        }
+
+        navigate("/login");
+    }
+
+    return { 
+        isAuthenticated, 
+        loadingSession, 
+        sessionUserData, 
+        logout,
+        logoutState
+    };
 }
