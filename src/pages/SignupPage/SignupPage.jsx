@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isValidEmail } from "../../utils/helpers/isEmailValid";
+import { supabase } from "../../lib/supabase";
+import { Player } from "@lottiefiles/react-lottie-player";
 import Button from "../../components/Button/Button";
 import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
 import Toast from "../../components/Toast/Toast";
-import { supabase } from "../../lib/supabase";
+import Modal from "../../components/Modal/Modal";
 
 const SignupPage = () => {
     const [formErrors, setFormErrors] = useState({
@@ -13,7 +15,9 @@ const SignupPage = () => {
         password: ""
     });
     const [loading, setLoading] = useState(false);
+    const [isSuccessful, setIsSuccessful] = useState(false);
     const [toast, setToast] = useState(null);
+    const navigate = useNavigate();
 
     const nameRef = useRef(null);
     const emailRef = useRef(null);
@@ -74,11 +78,13 @@ const SignupPage = () => {
                 message: "You have signed up successfully.",
                 type: "success",
             });
+            setIsSuccessful(true);
         } else {
             setToast({
                 message: error.message || "Failed to signup.",
                 type: "error",
             });
+            setIsSuccessful(false);
         }
 
         // End Loading Sequence
@@ -93,6 +99,23 @@ const SignupPage = () => {
                     type={toast.type}
                     onClose={() => setToast(null)}
                 />
+            )}
+
+            {/* Email Confirmation Success Modal */}
+            {isSuccessful && ( 
+                <Modal type="blur">
+                    <Player
+                        autoplay
+                        loop={true}
+                        src={"/lotties/email-animation.json"}
+                        style={{ height: '150px', width: '150px', scale: "200%" }}
+                    />
+                    <h1 className="text-lg sm:text-3xl font-bold font-headings">
+                        Confirmation Email Sent to <b className="font-extrabold">{emailRef.current.value || ""}</b>! 🎉
+                    </h1>
+                    <p className="text-sm sm:text-base">Kindly click the link in the mail to verify your email.</p>
+                    <Button type="bg-black" onClick={() => navigate("/login")}>Done? Login</Button>
+                </Modal>
             )}
 
             <header 
