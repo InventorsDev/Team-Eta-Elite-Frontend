@@ -21,3 +21,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.ease-transition {
+  @apply transition-all duration-300 ease-out;
+}
+

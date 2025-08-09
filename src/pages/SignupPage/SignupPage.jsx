@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Button from "../../components/Button/Button";
 
 const SignupPage = () => {
     return (
@@ -23,7 +24,7 @@ const SignupPage = () => {
                 className="text-gray-700 p-6 sm:p-10 md:p-16 font-semibold space-y-4 lg:w-[50%] my-auto" 
                 onSubmit={(e) => e.preventDefault()}
             > 
-                <h1 className="font-extrabold text-3xl text-black font-headings lg:text-4xl">Create Account - SAFELINK</h1>
+                <h1 className="font-extrabold text-3xl text-black font-headings lg:text-4xl">Create Account</h1>
                 <p className="text-sm">Enter your details</p>
 
                 <div id="name-input" className="flex flex-col gap-2">
@@ -42,8 +43,7 @@ const SignupPage = () => {
                 </div>
 
                 <p className="text-sm">Forgot your password? </p>
-
-                <button className="text-white bg-[var(--primary-color)] p-3 w-full rounded text-center cursor-pointer">SIGN UP</button>
+                <Button type="bg-black">SIGN UP</Button>
             </form>
         </div>
     );

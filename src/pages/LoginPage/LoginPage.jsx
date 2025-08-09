@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Button from "../../components/Button/Button";
 
 const LoginPage = () => {
     return (
@@ -37,8 +38,7 @@ const LoginPage = () => {
                 </div>
 
                 <p className="text-sm">Forgot your password? </p>
-
-                <button className="text-white bg-[var(--primary-color)] p-3 w-full rounded text-center cursor-pointer">SIGN IN</button>
+                <Button type={"bg-black"}>SIGN IN</Button>
             </form>
         </div>
     );
