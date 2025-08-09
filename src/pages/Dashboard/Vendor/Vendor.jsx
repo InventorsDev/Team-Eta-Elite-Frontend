@@ -21,7 +21,7 @@ const VendorDashboard = () => {
             <Button disabled={logoutState.loading} onClick={logout}>
                 {logoutState.loading 
                     ? <span><InlineSpinner /> Logging out...</span> 
-                    : "Logout"
+                    : "Logout Now"
                 }
             </Button>
         </div>
