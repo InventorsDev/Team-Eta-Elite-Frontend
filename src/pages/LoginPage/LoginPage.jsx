@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState, useRef, useContext } from "react";
+import { Link, useNavigate} from "react-router-dom";
 import { isValidEmail } from "../../utils/helpers/isEmailValid";
 import Button from "../../components/Button/Button";
 import Toast from "../../components/Toast/Toast";
@@ -13,6 +13,7 @@ const LoginPage = () => {
     });
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState(null);
+    const navigate = useNavigate();
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
@@ -55,6 +56,7 @@ const LoginPage = () => {
                 message: "You have signed in successfully.",
                 type: "success",
             });
+            setTimeout(() => navigate("/dashboard"), 2000);
         } else {
             setToast({
                 message: typeof error !== "string" ? error.message: error || "Failed to signin.",
