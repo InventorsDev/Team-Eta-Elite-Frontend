@@ -14,7 +14,7 @@ export function useAuth() {
         email_verified: false,
         phone_verified: false,
         role: "vendor",
-        sub: "23516259-b026-4475-8488-3ee3f1e9b997"
+        sub: ""
     });
     const [logoutState, setLogoutState] = useState({
         loading: false,
