@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { isValidEmail } from "../../utils/isEmailValid";
+import { isValidEmail } from "../../utils/helpers/isEmailValid";
 import Button from "../../components/Button/Button";
 import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
 import Toast from "../../components/Toast/Toast";
+import { supabase } from "../../lib/supabase";
 
 const SignupPage = () => {
     const [formErrors, setFormErrors] = useState({
@@ -17,8 +18,9 @@ const SignupPage = () => {
     const nameRef = useRef(null);
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+    const roleRef = useRef(null);
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         // bypass default refresh 
         e.preventDefault();
 
@@ -26,6 +28,7 @@ const SignupPage = () => {
         const name = nameRef.current.value;
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
+        const role = roleRef.current.value;
 
         if (name.length <= 5) {
             setFormErrors((prev) => ({...prev, name: "Name must be greater than 5 characters"}));
@@ -51,19 +54,35 @@ const SignupPage = () => {
         setLoading(true);
 
         // make signup API request
-        try {
+        const { data, error } = await supabase.auth.signUp(
+            {
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        display_name: name,
+                        role: role
+                    }
+                }
+            },
+        );
+
+        if (!error) {
+            console.log(data);
+            
             setToast({
                 message: "You have signed up successfully.",
                 type: "success",
             });
-        } catch (error) {
+        } else {
             setToast({
-                message: "Failed to signup.",
+                message: error.message || "Failed to signup.",
                 type: "error",
             });
-        } finally {
-            setTimeout(() => setLoading(false), 3000);
         }
+
+        // End Loading Sequence
+        setLoading(false);
     }
 
     return (
@@ -115,6 +134,14 @@ const SignupPage = () => {
                     <label htmlFor="password" className="text-black">Password: </label>
                     <input type="password" id="password" name="password" ref={passwordRef} className="rounded px-4 py-3 bg-gray-200 text-sm" placeholder="Password"/>
                     {formErrors.password !== "" && <p className="text-red-500 text-sm">{formErrors.password}</p>}
+                </div>
+                
+                <div id="role-input" className="flex flex-col gap-2">
+                    <label htmlFor="role" className="text-black">Role: </label>
+                    <select type="role" id="role" name="role" ref={roleRef} className="rounded cursor-pointer px-4 py-3 bg-gray-200 text-sm" placeholder="Role">
+                        <option value="vendor">Vendor</option>
+                        <option value="buyer">Buyer</option>
+                    </select>
                 </div>
 
                 <p className="text-sm">Forgot your password? </p>

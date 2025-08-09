@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { isValidEmail } from "../../utils/isEmailValid";
+import { isValidEmail } from "../../utils/helpers/isEmailValid";
 import Button from "../../components/Button/Button";
 import Toast from "../../components/Toast/Toast";
 import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
+import { supabase } from "../../lib/supabase";
 
 const LoginPage = () => {
     const [formErrors, setFormErrors] = useState({
@@ -16,7 +17,7 @@ const LoginPage = () => {
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
 
-    const handleSignin = (e) => {
+    const handleSignin = async (e) => {
         // bypass default refresh 
         e.preventDefault();
 
@@ -42,19 +43,27 @@ const LoginPage = () => {
         setLoading(true);
 
         // make SignIn API request
-        try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (!error) {
+            console.log(data);
+
             setToast({
                 message: "You have signed in successfully.",
                 type: "success",
             });
-        } catch (error) {
+        } else {
             setToast({
-                message: "Failed to signin.",
+                message: typeof error !== "string" ? error.message: error || "Failed to signin.",
                 type: "error",
             });
-        } finally {
-            setTimeout(() => setLoading(false), 3000);
         }
+
+        // End loading sequence
+        setLoading(false);
     }
 
     return (
