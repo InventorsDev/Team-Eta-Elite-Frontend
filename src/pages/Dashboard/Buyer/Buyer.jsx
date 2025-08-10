@@ -10,7 +10,7 @@ const BuyerDashboard = () => {
     const { sessionUserData, logout, logoutState } = useAuth();
     
     return (
-        <div>
+        <div className='ml-[285px] p-6 md:p-12 md:ml-[325px]'>
             {toast && (
                 <Toast 
                 type='success'
