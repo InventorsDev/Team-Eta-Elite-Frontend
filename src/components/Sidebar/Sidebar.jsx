@@ -75,7 +75,7 @@ const Sidebar = ({ forVendor }) => {
                     buyerDashboardLinks.map((link) => 
                         <li key={link.name} className={`
                             my-6 pl-12 text-center ${link.path === pathname && "sidebar-link-active"}
-                            hover:scale-[105%] hover:transition-transform hover:duration-200 hover:ease-in-out
+                            hover:scale-[104%] hover:transition-transform hover:duration-200 hover:ease-in-out
                         `}>
                             <Link to={link.path} className="flex items-center gap-2">
                                 <img src={link.icon} alt={link.name} className="w-5 h-5" />
