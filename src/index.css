@@ -25,3 +25,6 @@
   @apply transition-all duration-300 ease-out;
 }
 
+.sidebar-link-active {
+  @apply transition-all duration-300 ease-out py-2 border-l-[16px] border-white rounded-r-xl pl-8 bg-gray-600
+}
