@@ -47,12 +47,12 @@ const Sidebar = ({ forVendor }) => {
         {
             name: "Orders",
             path: `/dashboard/buyer/`,
-            icon: "/icons/sidebar/dashboard.svg"
+            icon: "/icons/sidebar/orders_buyer.svg"
         },
         {
             name: "Saved Vendors",
             path: `/dashboard/buyer/vendors`,
-            icon: "/icons/sidebar/my_products.svg"
+            icon: "/icons/sidebar/saved_vendors.svg"
         },
         {
             name: "Settings",
@@ -100,7 +100,7 @@ const Sidebar = ({ forVendor }) => {
                     )
                 )}
             </ul>
-
+            
             <button  disabled={logoutState.loading} onClick={logout} className={`
                 text-white border-white cursor-pointer w-full p-2 pl-12 rounded-r-xl mt-[100%] hover:bg-gray-600
                 hover:scale-[105%] hover:transition-transform hover:duration-200 hover:ease-in-out disabled:opacity-50 disabled:cursor-not-allowed
