@@ -3,7 +3,6 @@ import { useAuth } from "../../utils/hooks/useAuth";
 import { Link, useLocation } from "react-router-dom";
 import InlineSpinner from "../InlineSpinner/InlineSpinner";
 import Toast from "../Toast/Toast";
-import Button from "../Button/Button";
 
 const Sidebar = ({ forVendor }) => {
     const [toast, setToast] = useState(null);
@@ -13,7 +12,7 @@ const Sidebar = ({ forVendor }) => {
     const vendorDashboardLinks = [
         {
             name: "Dashboard",
-            path: `/dashboard/vendor`,
+            path: `/dashboard/vendor/`,
             icon: "/icons/sidebar/dashboard.svg"
         },
         {
@@ -46,7 +45,7 @@ const Sidebar = ({ forVendor }) => {
     const buyerDashboardLinks = [
         {
             name: "Orders",
-            path: `/dashboard/buyer/`,
+            path: `/dashboard/buyer/orders`,
             icon: "/icons/sidebar/orders_buyer.svg"
         },
         {
