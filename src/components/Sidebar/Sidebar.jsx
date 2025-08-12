@@ -3,7 +3,6 @@ import { useAuth } from "../../utils/hooks/useAuth";
 import { Link, useLocation } from "react-router-dom";
 import InlineSpinner from "../InlineSpinner/InlineSpinner";
 import Toast from "../Toast/Toast";
-import Button from "../Button/Button";
 
 const Sidebar = ({ forVendor }) => {
     const [toast, setToast] = useState(null);
@@ -13,7 +12,7 @@ const Sidebar = ({ forVendor }) => {
     const vendorDashboardLinks = [
         {
             name: "Dashboard",
-            path: `/dashboard/vendor`,
+            path: `/dashboard/vendor/`,
             icon: "/icons/sidebar/dashboard.svg"
         },
         {
@@ -46,13 +45,13 @@ const Sidebar = ({ forVendor }) => {
     const buyerDashboardLinks = [
         {
             name: "Orders",
-            path: `/dashboard/buyer/`,
-            icon: "/icons/sidebar/dashboard.svg"
+            path: `/dashboard/buyer/orders`,
+            icon: "/icons/sidebar/orders_buyer.svg"
         },
         {
             name: "Saved Vendors",
             path: `/dashboard/buyer/vendors`,
-            icon: "/icons/sidebar/my_products.svg"
+            icon: "/icons/sidebar/saved_vendors.svg"
         },
         {
             name: "Settings",
@@ -100,7 +99,7 @@ const Sidebar = ({ forVendor }) => {
                     )
                 )}
             </ul>
-
+            
             <button  disabled={logoutState.loading} onClick={logout} className={`
                 text-white border-white cursor-pointer w-full p-2 pl-12 rounded-r-xl mt-[100%] hover:bg-gray-600
                 hover:scale-[105%] hover:transition-transform hover:duration-200 hover:ease-in-out disabled:opacity-50 disabled:cursor-not-allowed

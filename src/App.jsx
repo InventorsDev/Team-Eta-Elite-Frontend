@@ -6,7 +6,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import { useAuth } from "./utils/hooks/useAuth";
 import VendorDashboard from "./pages/Dashboard/Vendor/Vendor";
 import BuyerDashboard from "./pages/Dashboard/Buyer/Buyer";
-import TestUpload from "./pages/TestUpload";
+import ProductsListing from "./pages/Dashboard/ProductsListing/ProductsListing";
+import ProductDetails from "./pages/Dashboard/ProductsListing/ProductDetails/ProductDetails";
 
 function App() {
   const { loadingSession } = useAuth();
@@ -22,10 +23,10 @@ function App() {
         <Route path="/login" loader={LoadingUI} element={<LoginPage />} />
         <Route path="/signup" loader={LoadingUI} element={<SignupPage />} />
         <Route path="/dashboard/" loader={LoadingUI} element={<Dashboard />} />
-        <Route path="/dashboard/vendor" loader={LoadingUI} element={<VendorDashboard />} />
-        <Route path="/dashboard/buyer" loader={LoadingUI} element={<BuyerDashboard />} />
-        <Route path="/test-upload" element={<TestUpload />} />
-
+        <Route path="/dashboard/vendor/*" loader={LoadingUI} element={<VendorDashboard />} />
+        <Route path="/dashboard/buyer/*" loader={LoadingUI} element={<BuyerDashboard />} />
+        <Route path="/products/" loader={LoadingUI} element={<ProductsListing />} />
+        <Route path="/products/:id" loader={LoadingUI} element={<ProductDetails />} />
       </Routes>
     </>
   )

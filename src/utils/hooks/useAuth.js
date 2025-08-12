@@ -36,7 +36,7 @@ export function useAuth() {
                     setSessionUserData(session.user.user_metadata);
 
                     // If there's an active session and user is on login page, move user to dashboard
-                    if (pathname === "/" || pathname === "/login") navigate("/dashboard/vendor");
+                    if (pathname === "/" || pathname === "/login" || pathname === "/signup") navigate(`/dashboard/${session.user.user_metadata.role}`);
                 }
             } catch (error) {
                 console.error("Auth check error:", error);
