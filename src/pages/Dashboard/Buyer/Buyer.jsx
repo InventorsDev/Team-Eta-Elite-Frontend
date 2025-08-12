@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import Orders from './Orders/Orders';
 import SavedVendors from './SavedVendors/SavedVendors';
@@ -9,7 +10,9 @@ const BuyerDashboardLayout = () => {
     const { sessionUserData } = useAuth();
     const navigate = useNavigate();
 
-    if (sessionUserData.role !== "buyer") navigate("/dashboard/vendor/");
+    useEffect(() => {
+        if (sessionUserData.role !== "buyer") navigate("/dashboard/vendor/");
+    }, []);
 
     return (
         <div className='ml-[285px] p-6 md:p-12 md:ml-[325px]'>

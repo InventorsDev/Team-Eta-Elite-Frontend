@@ -12,7 +12,7 @@ const Sidebar = ({ forVendor }) => {
     const vendorDashboardLinks = [
         {
             name: "Dashboard",
-            path: `/dashboard/vendor`,
+            path: `/dashboard/vendor/`,
             icon: "/icons/sidebar/dashboard.svg"
         },
         {
