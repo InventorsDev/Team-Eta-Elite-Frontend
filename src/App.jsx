@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import { useAuth } from "./utils/hooks/useAuth";
 import VendorDashboard from "./pages/Dashboard/Vendor/Vendor";
 import BuyerDashboard from "./pages/Dashboard/Buyer/Buyer";
+import TestUpload from "./pages/TestUpload";
 
 function App() {
   const { loadingSession } = useAuth();
@@ -23,6 +24,8 @@ function App() {
         <Route path="/dashboard/" loader={LoadingUI} element={<Dashboard />} />
         <Route path="/dashboard/vendor" loader={LoadingUI} element={<VendorDashboard />} />
         <Route path="/dashboard/buyer" loader={LoadingUI} element={<BuyerDashboard />} />
+        <Route path="/test-upload" element={<TestUpload />} />
+
       </Routes>
     </>
   )
