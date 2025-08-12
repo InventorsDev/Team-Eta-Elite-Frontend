@@ -1,33 +1,39 @@
-import { useState } from 'react';
-import Button from '../../../components/Button/Button';
-import { useAuth } from '../../../utils/hooks/useAuth';
-import InlineSpinner from '../../../components/InlineSpinner/InlineSpinner';
-import Toast from '../../../components/Toast/Toast';
 import Sidebar from '../../../components/Sidebar/Sidebar';
+import Overview from './Overview/Overview';
+import Products from './Products/Products';
+import Orders from './Orders/Orders';
+import CreateProduct from './CreateProduct/CreateProduct';
+import KYCVerification from './KYCVerification/KYCVerification';
+import Settings from '../Settings/Settings';
+import { Outlet, Routes, Route, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../utils/hooks/useAuth';
 
-const VendorDashboard = () => {
-    const [toast, setToast] = useState(null);
-    const { sessionUserData, logout, logoutState } = useAuth();
-    
+const VendorDashboardLayout = () => {
+    const { sessionUserData } = useAuth();
+    const navigate = useNavigate();
+
+    if (sessionUserData.role !== "vendor") navigate("/dashboard/buyer/orders");
+
     return (
         <div className='ml-[285px] p-6 md:p-12 md:ml-[325px]'>
-            {toast && (
-                <Toast 
-                    type='success'
-                    message={logoutState.message}
-                    onClose={() => setTimeout(() => setToast(null), 3000)}
-                />
-            )}
             <Sidebar forVendor />
-            
-            <h1>Hiii {sessionUserData.display_name.split(" ")[0]}, this is your Vendor Dashboard.</h1>
-            <Button disabled={logoutState.loading} onClick={logout}>
-                {logoutState.loading 
-                    ? <span><InlineSpinner /> Logging out...</span> 
-                    : "Logout Now"
-                }
-            </Button>
+            <Outlet />
         </div>
+    )
+}
+
+const VendorDashboard = () => {
+    return (
+        <Routes>
+            <Route path='/' element={<VendorDashboardLayout />}>
+                <Route index element={<Overview />} />
+                <Route path='products' element={<Products />} />
+                <Route path='orders' element={<Orders />} />
+                <Route path='create' element={<CreateProduct />} />
+                <Route path='kyc' element={<KYCVerification />} />
+                <Route path='settings' element={<Settings />} />
+            </Route>
+        </Routes>
     );
 }
 
