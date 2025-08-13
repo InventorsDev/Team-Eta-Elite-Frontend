@@ -17,16 +17,71 @@ const CreateProduct = () => {
     const [imageFile, setImageFile] = useState(null);
     const { sessionUserData } = useAuth();
     const vendor_id = sessionUserData.sub;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
     const handleFormChange = (e) => {
         const { id, value, files } = e.target;
         
         if (id === "image") {
-            setImageFile(files[0]);
+            const file = files[0];
+            if (file && file.size > MAX_FILE_SIZE) {
+                setToast({
+                    type: "error",
+                    message: "Image size should not exceed 5MB"
+                });
+                e.target.value = ''; // Reset file input
+                return;
+            }
+            setImageFile(file);
         } else {
             setFormData(prev => ({...prev, [id]: value}));
         }
     }
+
+    const validateForm = () => {
+        if (!formData.name.trim()) {
+            setToast({ 
+                type: "error",
+                message: "Product name is required"
+            });
+            return false;
+        }
+
+        if (!formData.description.trim()) {
+            setToast({ 
+                type: "error",
+                message: "Product description is required"
+            });
+            return false;
+        }
+
+        const price = parseFloat(formData.price);
+        if (isNaN(price) || price < 500) {
+            setToast({ 
+                type: "error",
+                message: "Price must be at least ₦500"
+            });
+            return false;
+        }
+
+        if (!imageFile) {
+            setToast({ 
+                type: "error",
+                message: "Product image is required"
+            });
+            return false;
+        }
+
+        if (imageFile.size > MAX_FILE_SIZE) {
+            setToast({ 
+                type: "error",
+                message: "Image size should not exceed 5MB"
+            });
+            return false;
+        }
+
+        return true;
+    };
 
     const uploadImage = async () => {
         if (!imageFile) return null;
@@ -35,7 +90,7 @@ const CreateProduct = () => {
         const fileName = `${Math.random()}.${fileExt}`;
 
         try {
-            const { data, error } = await supabase.storage
+            const { error } = await supabase.storage
                 .from('products')
                 .upload(fileName, imageFile);
 
@@ -57,6 +112,11 @@ const CreateProduct = () => {
 
     const handleFormSubmission = async (e) => {
         e.preventDefault();
+        // Validate form before proceeding
+        if (!validateForm()) {
+            return;
+        }
+        
         setIsLoading(true);
 
         try {
@@ -121,19 +181,26 @@ const CreateProduct = () => {
             <form onSubmit={handleFormSubmission} className="space-y-2">
                 <div id="name-input">
                     <label htmlFor="name">Name</label>
-                    <input type="text" id="name" onChange={handleFormChange} placeholder="e.g Comfy shorts" />
+                    <input type="text" id="name" className="border" onChange={handleFormChange} placeholder="e.g Comfy shorts" />
                 </div>
                 <div id="description-input">
                     <label htmlFor="description">Description</label>
-                    <textarea type="text" id="description" onChange={handleFormChange} placeholder="Provide a detailed description of your product" />
+                    <textarea type="text" id="description" className="border" onChange={handleFormChange} placeholder="Provide a detailed description of your product" />
                 </div>
                 <div id="price-input">
                     <label htmlFor="price">Price</label>
-                    <input type="text" id="price" onChange={handleFormChange} placeholder="₦ 0.00" />
+                    <input type="text" id="price" className="border" onChange={handleFormChange} placeholder="₦ 0.00" />
                 </div>                
                 <div id="image-input">
-                    <label htmlFor="image">Image Upload</label>
-                    <input type="file" name="image" onChange={handleFormChange}  id="image" />
+                    <label htmlFor="image">Image Upload (Max 5MB)</label>
+                    <input 
+                        type="file" 
+                        name="image" 
+                        className="border" 
+                        onChange={handleFormChange}  
+                        id="image" 
+                        accept="image/*"
+                    />
                 </div>
 
                 <Button 
@@ -141,7 +208,7 @@ const CreateProduct = () => {
                     type="bg-black"
                 >
                     {isLoading ? (
-                        <div className="gap-2 flex items-center">
+                        <div className="gap-2 justify-center flex items-center">
                             <InlineSpinner />
                             Uploading Product...
                         </div>
