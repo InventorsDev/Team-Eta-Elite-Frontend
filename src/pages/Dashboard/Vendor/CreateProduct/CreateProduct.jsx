@@ -189,7 +189,21 @@ const CreateProduct = () => {
                 </div>
                 <div id="price-input">
                     <label htmlFor="price">Price</label>
-                    <input type="text" id="price" className="border" onChange={handleFormChange} placeholder="₦ 0.00" />
+                    <input 
+                        type="text" 
+                        id="price" 
+                        className="border" 
+                        value={formData.price === 0 ? "" : `₦${new Intl.NumberFormat('en-NG').format(formData.price)}`}
+                        onChange={e => {
+                            // Remove non-digit characters and parse to number
+                            const rawValue = e.target.value.replace(/[^0-9]/g, "");
+                            setFormData(prev => ({
+                                ...prev,
+                                price: rawValue === "" ? 0 : Number(rawValue)
+                            }));
+                        }}
+                        placeholder="₦ 0.00" 
+                    />
                 </div>                
                 <div id="image-input">
                     <label htmlFor="image">Image Upload (Max 5MB)</label>
