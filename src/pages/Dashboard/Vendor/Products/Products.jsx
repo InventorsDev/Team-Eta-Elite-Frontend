@@ -1,14 +1,21 @@
-import Table from "../../../../components/Table/Table";
-import Button from "../../../../components/Button/Button";
-import Toast from "../../../../components/Toast/Toast";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../../lib/supabase";
 import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
+import { useNavigate } from "react-router-dom";
+import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
+import Table from "../../../../components/Table/Table";
+import Button from "../../../../components/Button/Button";
+import Toast from "../../../../components/Toast/Toast";
+import Skeleton from "../../../../components/Skeleton/Skeleton";
+import EmptyListUI from "../../../../components/EmptyListUI/EmptyListUI";
 
 const Products = () => {
     const [productsList, setProductsList] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
-    
+    const navigate = useNavigate();
+    const isWide = useWindowSize()
+
     useEffect(() => {
         const controller = new AbortController();
         fetchVendorProducts();
@@ -16,6 +23,8 @@ const Products = () => {
     }, []);
 
     const fetchVendorProducts = async () => {
+        setLoading(true);
+
         const { data: Products, error } = await supabase
             .from('Products')
             .select('*');
@@ -29,7 +38,7 @@ const Products = () => {
         }
 
         setProductsList(Products);
-        console.log(Products);
+        setTimeout(() =>  setLoading(false), 1000);
     }
 
     return (
@@ -47,11 +56,20 @@ const Products = () => {
                     <h1 className="font-bold text-2xl">My Products</h1>
                     <p className="text-gray-500 text-sm">Here's a list of your products</p>
                 </div>
-                <Button type={"bg-black"}>+ Upload New Product</Button>
+                <Button type={"bg-black"} onClick={() => navigate("/dashboard/vendor/create")}>
+                    {isWide ? "+ Upload New Product": "+ Upload"}
+                </Button>
             </header>
 
+            {productsList.length === 0 && !loading && (
+                <EmptyListUI 
+                    heading={"Oops, There are No Products Currently."}
+                    subheading={"Upload products to see them here"}
+                />
+            )}
+
             <Table headers={["Product", "Title", "Price", "actions"]}>
-                {productsList.length > 0 && productsList.map(item => (
+                {productsList.length > 0 && !loading && productsList.map(item => (
                     <tr key={item.id} className="border-t-2 border-gray-200 text-gray-600">
                         <td className="p-4">
                             <img 
@@ -78,6 +96,12 @@ const Products = () => {
                     </tr> 
                 ))}
             </Table>
+
+            {loading && (
+                <div className="space-y-3">
+                    {[...Array(10).keys()].map(index => index + 1).map(index => <Skeleton key={index} />)}
+                </div>
+            )}
         </div>
     );
 }
