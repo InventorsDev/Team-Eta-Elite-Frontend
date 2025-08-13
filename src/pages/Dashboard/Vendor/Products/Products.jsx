@@ -3,6 +3,7 @@ import Button from "../../../../components/Button/Button";
 import Toast from "../../../../components/Toast/Toast";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../../lib/supabase";
+import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
 
 const Products = () => {
     const [productsList, setProductsList] = useState([]);
@@ -60,7 +61,7 @@ const Products = () => {
                             />
                         </td>
                         <td className="p-4">{item.name}</td>
-                        <td className="p-4">{item.price}</td>
+                        <td className="p-4">{formatToNaira(item.price)}</td>
                         <td className="p-4">
                             <div className="flex items-center gap-2">
                                 {/* Edit Icon */}
