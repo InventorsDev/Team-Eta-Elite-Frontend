@@ -27,7 +27,8 @@ export function useAuth() {
         async function checkAuth() {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
-                console.log(session)
+                console.log(session);
+                
                 if (!session) {
                     if (pathname === "/login") setLoadingSession(false);
                     if (pathname.includes("dashboard")) navigate("/login");
