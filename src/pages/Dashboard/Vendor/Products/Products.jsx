@@ -8,13 +8,18 @@ import Button from "../../../../components/Button/Button";
 import Toast from "../../../../components/Toast/Toast";
 import Skeleton from "../../../../components/Skeleton/Skeleton";
 import EmptyListUI from "../../../../components/EmptyListUI/EmptyListUI";
+import Modal from "../../../../components/Modal/Modal";
+import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
 
 const Products = () => {
     const [productsList, setProductsList] = useState([]);
+    const [showDeletionModal, setShowDeletionModal] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [selectedProductName, setSelectedProductName] = useState("");
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
     const navigate = useNavigate();
-    const isWide = useWindowSize()
+    const isWide = useWindowSize();
 
     useEffect(() => {
         const controller = new AbortController();
@@ -25,13 +30,18 @@ const Products = () => {
     const fetchVendorProducts = async () => {
         setLoading(true);
 
+        // get user id 
+        const { data: claims } = await supabase.auth.getClaims();
+        const vendorId = claims.claims.sub;
+
         const { data: Products, error } = await supabase
             .from('Products')
-            .select('*');
+            .select('*')
+            .eq("vendor_id", vendorId);
         
         if (error) {
             setToast({
-                type: "failure",
+                type: "error",
                 message: error.message || "Failed to Fetch Products"
             })
             throw new Error(error);
@@ -39,6 +49,38 @@ const Products = () => {
 
         setProductsList(Products);
         setTimeout(() =>  setLoading(false), 1000);
+    }
+
+    const handleProductDeletion = async () => {
+        setDeleteLoading(true);
+        const selectedProduct = productsList.find(product => product.name === selectedProductName);
+
+        const { error } = await supabase
+            .from("Products")
+            .delete()
+            .eq("id", selectedProduct.id);
+
+        if (error) {
+            setToast({
+                type: "error",
+                message: "Failed to delete selected product."
+            });
+            console.log(error);
+            setDeleteLoading(false);
+            return;
+        }
+
+        // remove product from UI
+        const updatedProductsList = [...productsList].filter(product => product.id !== selectedProduct.id);
+        setProductsList(updatedProductsList);
+
+        // apply success states
+        setToast({
+            type: "success",
+            message: "Product deleted successfully."
+        });
+        setDeleteLoading(false);
+        setShowDeletionModal(false);
     }
 
     return (
@@ -49,6 +91,33 @@ const Products = () => {
                     message={toast.message}
                     onClose={() => setToast(null)}
                 />
+            )}
+
+            {showDeletionModal && (
+                <Modal type={"blur"}>
+                    <h1 className="text-lg font-semibold">Confirm the deletion of <b className="font-extrabold">{selectedProductName}</b></h1>
+                    <p className="text-sm">Are you sure you want to delete the selected product? <br /> This action cannot be undone.</p>
+                    <div className="flex items-center gap-4" id="buttons-container">
+                        <Button 
+                            onClick={() => setShowDeletionModal(false)}
+                            className={"bg-neutral-600 py-2 px-4 text-white border-2 border-neutral-300 hover:bg-neutral-700"}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            disabled={deleteLoading}
+                            className={"text-white py-2 px-4 bg-red-500 border-2 border-red-700 hover:bg-red-700"}
+                            onClick={handleProductDeletion}
+                        >
+                            {deleteLoading
+                                ? (<span>
+                                    <InlineSpinner className="px-2" /> Deleting ...
+                                  </span>)
+                                :"Delete"
+                            }
+                        </Button>
+                    </div>
+                </Modal>
             )}
 
             <header className="flex justify-between items-center gap-2">
@@ -88,7 +157,14 @@ const Products = () => {
                                 </svg>
 
                                 {/* Delete Icon */}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="red" className="size-5 cursor-pointer">
+                                <svg 
+                                    onClick={() => { 
+                                        setSelectedProductName(item.name); 
+                                        setShowDeletionModal(true);
+                                    }}
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="red" 
+                                    className="size-5 cursor-pointer"
+                                >
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
                             </div>
