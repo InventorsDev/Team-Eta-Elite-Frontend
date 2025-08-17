@@ -14,7 +14,9 @@ import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
 const Products = () => {
     const [productsList, setProductsList] = useState([]);
     const [showDeletionModal, setShowDeletionModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [updateLoading, setUpdateLoading] = useState(false);
     const [selectedProductName, setSelectedProductName] = useState("");
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
@@ -83,6 +85,42 @@ const Products = () => {
         setShowDeletionModal(false);
     }
 
+    const handleProductUpdate = async () => {
+        setUpdateLoading(true);
+        const selectedProduct = productsList.find(product => product.name === selectedProductName);
+        
+        const { error } = await supabase
+            .from("Products")
+            .update({ status: selectedProduct.status === "active" ? "inactive" : "active" })
+            .eq("id", selectedProduct.id);
+
+        if (error) {
+            setToast({
+                type: "error",
+                message: error.message || "Failed to Update Product Availability"
+            })
+            setUpdateLoading(false);
+            throw new Error(error);
+        }
+
+        // change state in UI with updated availability
+        const updatedProductsList = [...productsList].map(product => {
+            if (product.id === selectedProduct.id) {
+                return { ...product, status: selectedProduct.status === "active" ? "inactive" : "active" };
+            }
+            return product;
+        });
+        setProductsList(updatedProductsList);
+
+        // apply success states
+        setToast({
+            type: "success",
+            message: "Product availability updated successfully."
+        });
+        setUpdateLoading(false);
+        setShowUpdateModal(false);
+    }
+
     return (
         <div className="w-full space-y-6">
             {toast && (
@@ -114,6 +152,33 @@ const Products = () => {
                                     <InlineSpinner className="px-2" /> Deleting ...
                                   </span>)
                                 :"Delete"
+                            }
+                        </Button>
+                    </div>
+                </Modal>
+            )}
+            
+            {showUpdateModal && (
+                <Modal type={"blur"}>
+                    <h1 className="text-lg font-semibold">Confirm update of <b className="font-extrabold">{selectedProductName}</b> availability.</h1>
+                    <p className="text-sm">Update the availability of the product to either active or inactive.</p>
+                    <div className="flex items-center gap-4" id="buttons-container">
+                        <Button 
+                            onClick={() => setShowUpdateModal(false)}
+                            className={"bg-neutral-600 py-2 px-4 text-white border-2 border-neutral-300 hover:bg-neutral-700"}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            disabled={updateLoading}
+                            className={"text-white py-2 px-4 bg-red-500 border-2 border-red-700 hover:bg-red-700"}
+                            onClick={handleProductUpdate}
+                        >
+                            {updateLoading
+                                ? (<span>
+                                    <InlineSpinner className="px-2" /> Updating ...
+                                  </span>)
+                                : "Update Availability"
                             }
                         </Button>
                     </div>
@@ -159,7 +224,13 @@ const Products = () => {
                         <td className="p-4">
                             <div className="flex items-center gap-2">
                                 {/* Edit Icon */}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 cursor-pointer">
+                                <svg 
+                                    onClick={() => { 
+                                        setSelectedProductName(item.name); 
+                                        setShowUpdateModal(true);
+                                    }}
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5 cursor-pointer"
+                                >
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                                 </svg>
 
