@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "../../../../lib/supabase";
 import { useAuth } from "../../../../utils/hooks/useAuth";
 import Button from "../../../../components/Button/Button";
 import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
 import Toast from "../../../../components/Toast/Toast";
+import ImageUpload from "../../../../components/ImageUpload/ImageUpload";
 
 const CreateProduct = () => {
     const [formData, setFormData] = useState({
@@ -18,25 +19,23 @@ const CreateProduct = () => {
     const { sessionUserData } = useAuth();
     const vendor_id = sessionUserData.sub;
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+    const imageUploadRef = useRef();
 
     const handleFormChange = (e) => {
-        const { id, value, files } = e.target;
-        
-        if (id === "image") {
-            const file = files[0];
-            if (file && file.size > MAX_FILE_SIZE) {
-                setToast({
-                    type: "error",
-                    message: "Image size should not exceed 5MB"
-                });
-                e.target.value = ''; // Reset file input
-                return;
-            }
-            setImageFile(file);
-        } else {
-            setFormData(prev => ({...prev, [id]: value}));
-        }
+        const { id, value } = e.target;
+        setFormData(prev => ({...prev, [id]: value}));
     }
+
+    const handleImageSelect = (file) => {
+        setImageFile(file);
+    };
+
+    const handleImageError = (errorMessage) => {
+        setToast({
+            type: "error",
+            message: errorMessage
+        });
+    };
 
     const validateForm = () => {
         if (!formData.name.trim()) {
@@ -68,14 +67,6 @@ const CreateProduct = () => {
             setToast({ 
                 type: "error",
                 message: "Product image is required"
-            });
-            return false;
-        }
-
-        if (imageFile.size > MAX_FILE_SIZE) {
-            setToast({ 
-                type: "error",
-                message: "Image size should not exceed 5MB"
             });
             return false;
         }
@@ -154,6 +145,7 @@ const CreateProduct = () => {
                 fileUrl: ""
             });
             setImageFile(null);
+            imageUploadRef.current?.clearPreview();
             e.target.reset();
         } catch (error) {
             setToast({ 
@@ -204,16 +196,15 @@ const CreateProduct = () => {
                         }}
                         placeholder="₦ 0.00" 
                     />
-                </div>                
+                </div>
+
                 <div id="image-input">
                     <label htmlFor="image">Image Upload (Max 5MB)</label>
-                    <input 
-                        type="file" 
-                        name="image" 
-                        className="border" 
-                        onChange={handleFormChange}  
-                        id="image" 
-                        accept="image/*"
+                    <ImageUpload 
+                        ref={imageUploadRef}
+                        onSelect={handleImageSelect}
+                        onError={handleImageError}
+                        maxFileSize={MAX_FILE_SIZE}
                     />
                 </div>
 
