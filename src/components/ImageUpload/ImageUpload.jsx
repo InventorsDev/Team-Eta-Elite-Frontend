@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useState, forwardRef, useImperativeHandle } from "react";
 
-export default function ImageUpload({ onSelect }) {
+const ImageUpload = forwardRef(({ onSelect, maxFileSize = 5 * 1024 * 1024, onError }, ref) => {
   const [fileName, setFileName] = useState("No file chosen");
   const [preview, setPreview] = useState(null);
+
+  const clearPreview = () => {
+    setFileName("No file chosen");
+    setPreview(null);
+  };
+
+  useImperativeHandle(ref, () => ({
+    clearPreview
+  }));
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    
+    // Check file size
+    if (file.size > maxFileSize) {
+      const errorMessage = `File size should not exceed ${Math.round(maxFileSize / (1024 * 1024))}MB`;
+      onError?.(errorMessage);
+      e.target.value = ''; // Reset file input
+      return;
+    }
+    
     setFileName(file.name);
     setPreview(URL.createObjectURL(file));
     onSelect?.(file);
@@ -49,4 +67,6 @@ export default function ImageUpload({ onSelect }) {
       />
     </div>
   );
-}
+});
+
+export default ImageUpload;

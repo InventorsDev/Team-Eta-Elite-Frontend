@@ -81,7 +81,7 @@ const Overview = () => {
                         </div>
                         <div className="ml-4 space-y-2">
                             <h3 className="text-lg font-medium">{item.Title || "N/A"}</h3>
-                            <p className="text-2xl font-bold">
+                            <p className="text-xl sm:text-2xl font-bold">
                                 {(item.Title === "Total Earned" || item.Title === "Escrow Balance")
                                     ? Number(item.amount).toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })
                                     : Number(item.amount) || 0
