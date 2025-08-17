@@ -137,7 +137,7 @@ const Products = () => {
                 />
             )}
 
-            <Table headers={["Product", "Title", "Price", "actions"]}>
+            <Table headers={["Product", "Title", "Price", "Status", "Actions"]}>
                 {productsList.length > 0 && !loading && productsList.map(item => (
                     <tr key={item.id} className="border-t-2 border-gray-200 text-gray-600">
                         <td className="p-4">
@@ -149,6 +149,13 @@ const Products = () => {
                         </td>
                         <td className="p-4">{item.name}</td>
                         <td className="p-4">{formatToNaira(item.price)}</td>
+                        <td className="p-4">
+                            {item.status === "active" ? (
+                                <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Active</span>
+                            ) : (
+                                <span className="text-red-500 p-2 rounded-xl bg-red-100 text-sm">Inactive</span>
+                            )}
+                        </td>
                         <td className="p-4">
                             <div className="flex items-center gap-2">
                                 {/* Edit Icon */}
