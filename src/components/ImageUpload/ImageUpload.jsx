@@ -14,7 +14,7 @@ export default function ImageUpload({ onSelect }) {
 
   return (
     <div
-      className="w-[974px] h-[210px] border-2 border-dashed border-gray-400 rounded-[10px] md:  flex flex-col items-center justify-center gap-4 bg-white"
+      className="w-full h-[210px] border-2 border-dashed border-gray-400 rounded-[10px] md:  flex flex-col items-center justify-center gap-4 bg-white"
     >
       {preview ? (
         <img
