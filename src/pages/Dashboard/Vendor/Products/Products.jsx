@@ -171,14 +171,14 @@ const Products = () => {
                         </Button>
                         <Button 
                             disabled={updateLoading}
-                            className={"text-white py-2 px-4 bg-red-500 border-2 border-red-700 hover:bg-red-700"}
+                            className={"text-white py-2 px-4 bg-blue-500 border-2 border-blue-700 hover:bg-blue-700"}
                             onClick={handleProductUpdate}
                         >
                             {updateLoading
                                 ? (<span>
                                     <InlineSpinner className="px-2" /> Updating ...
                                   </span>)
-                                : "Update Availability"
+                                : "Update"
                             }
                         </Button>
                     </div>
