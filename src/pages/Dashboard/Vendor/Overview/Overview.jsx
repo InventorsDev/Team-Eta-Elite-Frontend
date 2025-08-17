@@ -24,7 +24,7 @@ const Overview = () => {
         },
         {
             Title:"Total Earned",
-            amount:0,
+            amount:8578,
             icon: (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-[#EDDC21] size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
@@ -34,7 +34,7 @@ const Overview = () => {
         },
         {
             Title:"Escrow Balance",
-            amount:0,
+            amount:1088,
             icon: (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-[#3C173E] size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
                 </svg>
@@ -45,7 +45,7 @@ const Overview = () => {
     ];
 
     return (
-        <>
+        <section className="flex flex-col justify-center m-auto ">
             <div className=" md:flex justify-center items-center">
                 <div>
                     <h1 className="text-5xl font-bold">Welcome back!</h1>
@@ -54,7 +54,7 @@ const Overview = () => {
                 <div className="ml-auto md:text-wrap text-nowrap justify-center items-center flex mt-4 md:mt-0  ">
                     <Link
                         to="../create"
-                        className="bg-[var(--primary-color)] transition-colors duration-300 px-8 font-medium py-3 rounded-md flex justify-center text-gray-100 items-center"
+                        className="bg-[var(--primary-color)] hover:bg-[var(--primary-color)]/95 transition-colors duration-300 px-8 font-medium py-3 rounded-md flex justify-center text-gray-100 items-center"
                     >
                         <div className="flex items-center gap-2 ">
                             <span className="text-2xl">+</span>
@@ -108,16 +108,16 @@ const Overview = () => {
 
             <button className="mt-6 w-full">
                 <Link
-                    className="bg-[var(--primary-color)] transition-colors duration-300 rounded-lg px-10 font-medium py-4 flex justify-center text-gray-100 items-center mt-6"
+                    className="bg-[var(--primary-color)] hover:bg-[var(--primary-color)]/95 transition-colors duration-300 rounded-lg px-10 font-medium py-3 flex justify-center text-gray-100 items-center mt-6"
                     to="../create"
                 >
                     <div className="flex items-center gap-2 ">
-                        <span>+</span>
+                        <span className="text-2xl">+</span>
                         <span>Create New Product</span>
                     </div>
                 </Link>
             </button>
-        </>
+        </section>
     );
 }
 
