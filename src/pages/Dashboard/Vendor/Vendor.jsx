@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import Overview from './Overview/Overview';
 import Products from './Products/Products';
@@ -6,17 +5,9 @@ import Orders from './Orders/Orders';
 import CreateProduct from './CreateProduct/CreateProduct';
 import KYCVerification from './KYCVerification/KYCVerification';
 import Settings from '../Settings/Settings';
-import { Outlet, Routes, Route, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../utils/hooks/useAuth';
+import { Outlet, Routes, Route } from 'react-router-dom';
 
 const VendorDashboardLayout = () => {
-    const { sessionUserData } = useAuth();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (sessionUserData.role !== "vendor") navigate("/dashboard/buyer/orders");
-    }, []);
-
     return (
         <div className='ml-[285px] p-6 md:p-12 md:ml-[325px]'>
             <Sidebar forVendor />

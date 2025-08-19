@@ -50,7 +50,7 @@ const Sidebar = ({ forVendor }) => {
         },
         {
             name: "Saved Vendors",
-            path: `/dashboard/buyer/vendors`,
+            path: `/dashboard/buyer/saved_suppliers`,
             icon: "/icons/sidebar/saved_vendors.svg"
         },
         {
