@@ -1,20 +1,17 @@
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../utils/hooks/useAuth';
 import LoadingUI from '../../components/LoadingUI/LoadingUI';
+import { Navigate, Outlet } from 'react-router-dom';
 
 const Dashboard = () => {
-    const { loadingSession, isAuthenticated, sessionUserData } = useAuth();
-    const navigate = useNavigate();
+    const { loadingSession, isAuthenticated } = useAuth();
 
     if (loadingSession) {
         return <LoadingUI />
     }
 
-    if (!isAuthenticated) navigate("/login");
+    // if (!isAuthenticated) return <Navigate to="/login" />;
 
-    navigate(`/dashboard/${sessionUserData.role}`);
-
-    return <></>
+    return <Outlet />
 }
 
 export default Dashboard;
