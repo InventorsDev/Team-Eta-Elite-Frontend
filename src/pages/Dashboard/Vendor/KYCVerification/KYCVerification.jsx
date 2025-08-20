@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ImageUpload from "../../../../components/ImageUpload/ImageUpload";
-import bellIcon from "../../../../assets/imagenotification.svg"; // normal import as image
+import Toast from "../../../../components/Toast/Toast";
+import bellIcon from "../../../../assets/imagenotification.svg";
+import Button from "../../../../components/Button/Button";
 
 const KYCVerification = () => {
   const [files, setFiles] = useState({ idFront: null, idBack: null });
   const [status, setStatus] = useState("Pending"); // Pending | Approved | Rejected
+  const [toast, setToast] = useState(null);
 
   const handleSelect = (name, file) => {
     setFiles((prev) => ({ ...prev, [name]: file }));
@@ -14,7 +17,10 @@ const KYCVerification = () => {
     e.preventDefault();
 
     if (!files.idFront || !files.idBack) {
-      alert("Please upload both sides of your NIN before submitting.");
+      setToast({
+        type: "error",
+        message: "Please upload both sides of your NIN before submitting."
+      });
       return;
     }
 
@@ -47,9 +53,17 @@ const KYCVerification = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-2">
+      {toast && (
+        <Toast 
+          type={toast.type}
+          message={toast.message}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       {/* Heading */}
-      <h1 className="text-2xl font-semibold mb-2">KYC Verification</h1>
+      <h1 className="text-2xl font-bold mb-2">KYC Verification</h1>
       <p className="text-gray-600 mb-4">
         Please provide the required documents for verification
       </p>
@@ -86,15 +100,17 @@ const KYCVerification = () => {
           <label className="block text-sm font-medium mb-2">
             Government ID / NIN (Back)
           </label>
-          <ImageUpload onSelect={(file) => handleSelect("idBack", file)} />
+          <ImageUpload onSelect={(file2) => handleSelect("idBack", file2)} />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-gray-900 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition"
-        >
-          Submit for Verification
-        </button>
+        <div className="w-full flex justify-center">
+          <Button
+            type="bg-black"
+            className="w-full"
+          >
+            Submit for Verification
+          </Button>
+        </div>
       </form>
     </div>
   );
