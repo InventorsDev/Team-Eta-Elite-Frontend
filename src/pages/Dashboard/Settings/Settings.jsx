@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import Toast from "../../../components/Toast/Toast";
 
-
-
 const Settings = () => {
     const [currentPassword, setcurrentPassword] = useState("");
     const [newPassword, setnewPassword] = useState("");
@@ -13,14 +11,13 @@ const Settings = () => {
     const [accountError, setAccountError] = useState("");
     const [bankName, setbankName] = useState("First Bank");
     const [toast, setToast] = useState(null);
-
-
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useEffect(() => {
 
         if (confirmPassword.length > 0) {
             if (confirmPassword !== newPassword) {
-                setPasswordError("Passwords do not match");
+                setPasswordError("Passwords do not match!");
             } else {
                 setPasswordError("");
             }
@@ -41,6 +38,29 @@ const Settings = () => {
             setAccountError("");
         }
     }, [accountNumber]);
+
+    const onDelete = () => {
+
+        setToast({
+                message: "Acount deleted succesfully",
+                type: "error",
+        }); 
+        // NAVIGATE &
+        // Delete logics
+    }
+
+    const handleDeleteClick = () => {
+        setShowConfirm(true);
+    };
+
+    const confirmDelete = () => {
+        onDelete();
+        setShowConfirm(false);
+    };
+
+    const cancelDelete = () => {
+        setShowConfirm(false);
+    };
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
@@ -125,8 +145,9 @@ const Settings = () => {
                     </div>
                     {/* password error message */}
                     {passwordError && (
-                        <span className="transition font-medium text-red-500">{passwordError}</span>
+                        <span className="transition text-sm font-medium text-red-500">{passwordError}</span>
                     )}
+
                     <div className="mt-7">
                         <label htmlFor="confirm-new-password" 
                             className="text-[#000000CC] font-semibold block mb-2">
@@ -186,7 +207,7 @@ const Settings = () => {
                     </div>
 
                     {accountError && (
-                        <span className="transition font-medium text-red-500">{accountError}</span>
+                        <span className="transition font-medium text-red-500 ">{accountError}</span>
                     )}
                     <div className="mt-7">
                         <label htmlFor="account-number" 
@@ -259,16 +280,37 @@ const Settings = () => {
                         Permanently delete your account and all your data. This action cannot be undone</p>
                     <div className="flex w-full mt-5">
                         <button
-                            className="bg-red-500 active:scale-95 cursor-pointer rounded-[10px] text-white  px-10 py-3  hover:bg-red-600 transition-all duration-300"
+                            onClick={handleDeleteClick}
+                            className="bg-[var(--primary-color)] active:scale-95 cursor-pointer rounded-[10px] text-white  px-10 py-3  hover:bg-red-500 transition-all duration-300"
                             type="button"
                         >
                             Delete Account
                         </button>
                     </div>
-                </div>
-                
+                    {showConfirm && (
+                        <div className="fixed z-1000 w-full overflow-hidden inset-0 flex items-center justify-center backdrop-blur-sm  bg-opacity-20">
+                            <div className="bg-white  py-10 px-8 rounded-[10px]  shadow-lg w-[90%] md:w-[500px]">
+                                <div className="font-semibold flex flex-col justify-center items-center text-center  mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="Red" className="size-14">
+                                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                    </svg>
+
+                                    <p className="text-md md:text-lg">Are you sure you want to delete your account?</p>
+                                    <p className="text-sm text-red-500 mt-1">NOTE: This action is irreversible.</p>
+                                </div>
+                                <div className="mt-4 flex text-sm justify-center items-center  gap-4">
+                                    <button onClick={confirmDelete} className=" cursor-pointer bg-red-400 hover:bg-red-500 transition-all  font-semibold text-white px-6 py-3 rounded-[10px]">
+                                        Yes, Delete
+                                    </button>
+                                    <button onClick={cancelDelete} className= "cursor-pointer font-semibold bg-gray-300 hover:bg-gray-400 transition-all px-6 py-3 rounded-[10px]">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>   
             </div>
-            
         </div>
     );
 }
