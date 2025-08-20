@@ -167,24 +167,25 @@ const CreateProduct = () => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <h1>Create Product</h1>
-            <p>Fill out the form below to add a new product</p>
+            <h1 className="text-2xl font-extrabold ">  Create Product</h1>
+            
+            <p className="text-gray-500 text-sm">Fill out the form below to add a new product</p>
 
-            <form onSubmit={handleFormSubmission} className="space-y-2">
-                <div id="name-input">
-                    <label htmlFor="name">Name</label>
-                    <input type="text" id="name" className="border" onChange={handleFormChange} placeholder="e.g Comfy shorts" />
+            <form onSubmit={handleFormSubmission} className="space-y-2 border-2 border-gray-200 p-5 rounded-lg mt-5 ">
+                <div id="name-input" className="">
+                    <label htmlFor="name" className="text-sm font-medium">Name</label>
+                    <input type="text" id="name" className="border-1 border-gray-400 rounded-md w-full px-3 py-2" onChange={handleFormChange} placeholder="e.g Comfy shorts" />
                 </div>
                 <div id="description-input">
-                    <label htmlFor="description">Description</label>
-                    <textarea type="text" id="description" className="border" onChange={handleFormChange} placeholder="Provide a detailed description of your product" />
+                    <label htmlFor="description" className="text-sm font-medium">Description</label>
+                    <textarea type="text" id="description" className="border-1 border-gray-400 rounded-md w-full px-3 py-2" onChange={handleFormChange} placeholder="Provide a detailed description of your product" />
                 </div>
                 <div id="price-input">
-                    <label htmlFor="price">Price</label>
+                    <label htmlFor="price" className="text-sm font-medium">Price</label>
                     <input 
                         type="text" 
                         id="price" 
-                        className="border" 
+                        className="border-1 border-gray-400 rounded-md w-full px-3 py-2 " 
                         value={formData.price === 0 ? "" : `₦${new Intl.NumberFormat('en-NG').format(formData.price)}`}
                         onChange={e => {
                             // Remove non-digit characters and parse to number
@@ -198,8 +199,8 @@ const CreateProduct = () => {
                     />
                 </div>
 
-                <div id="image-input">
-                    <label htmlFor="image">Image Upload (Max 5MB)</label>
+                <div id="image-input" className="mt-4">
+                    <label htmlFor="image" className="text-sm font-medium">Image Upload (Max 5MB)</label>
                     <ImageUpload 
                         ref={imageUploadRef}
                         onSelect={handleImageSelect}
@@ -207,13 +208,14 @@ const CreateProduct = () => {
                         maxFileSize={MAX_FILE_SIZE}
                     />
                 </div>
-
-                <Button 
+            
+            <div className="rounded-lg mt-8 mb-6 justify-center flex items-center">
+                <Button className="w-64 py-2 rounded-md "
                     disabled={isLoading} 
                     type="bg-black"
                 >
                     {isLoading ? (
-                        <div className="gap-2 justify-center flex items-center">
+                        <div>
                             <InlineSpinner />
                             Uploading Product...
                         </div>
@@ -221,6 +223,7 @@ const CreateProduct = () => {
                         'Upload Product'
                     )}
                 </Button>
+            </div>    
             </form>
         </div>
     );
