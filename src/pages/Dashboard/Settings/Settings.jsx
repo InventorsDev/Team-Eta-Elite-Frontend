@@ -252,7 +252,21 @@ const Settings = () => {
                     </div>
                     
                 </div>
-                <hr className="mt-10 border-gray-300"/>                
+                <hr className="mt-10 border-gray-300"/>
+                <div className="mt-10">
+                    <h2 className="text-[22px] text-red-500 font-semibold">Delete Account</h2>
+                    <p className="text-[#000000B2] font-medium text-sm md:text-lg mt-3">
+                        Permanently delete your account and all your data. This action cannot be undone</p>
+                    <div className="flex w-full mt-5">
+                        <button
+                            className="bg-red-500 active:scale-95 cursor-pointer rounded-[10px] text-white  px-10 py-3  hover:bg-red-600 transition-all duration-300"
+                            type="button"
+                        >
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+                
             </div>
             
         </div>
