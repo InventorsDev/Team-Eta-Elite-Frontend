@@ -289,20 +289,20 @@ const Settings = () => {
                     </div>
                     {showConfirm && (
                         <div className="fixed z-1000 w-full overflow-hidden inset-0 flex items-center justify-center backdrop-blur-sm  bg-opacity-20">
-                            <div className="bg-white  py-10 px-8 rounded-[10px]  shadow-lg w-[90%] md:w-[500px]">
+                            <div className="bg-white border-1 border-gray-200 py-10 px-8 rounded-[10px]  shadow-lg w-[90%] md:w-[500px]">
                                 <div className="font-semibold flex flex-col justify-center items-center text-center  mb-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="Red" className="size-14">
                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
                                     </svg>
 
-                                    <p className="text-md md:text-lg">Are you sure you want to delete your account?</p>
+                                    <p className="text-md md:text-lg text-gray-700 ">Are you sure you want to delete your account?</p>
                                     <p className="text-sm text-red-500 mt-1">NOTE: This action is irreversible.</p>
                                 </div>
                                 <div className="mt-4 flex text-sm justify-center items-center  gap-4">
                                     <button onClick={confirmDelete} className=" cursor-pointer bg-red-400 hover:bg-red-500 transition-all  font-semibold text-white px-6 py-3 rounded-[10px]">
                                         Yes, Delete
                                     </button>
-                                    <button onClick={cancelDelete} className= "cursor-pointer font-semibold bg-gray-300 hover:bg-gray-400 transition-all px-6 py-3 rounded-[10px]">
+                                    <button onClick={cancelDelete} className= "cursor-pointer font-semibold bg-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-400 transition-all px-6 py-3 rounded-[10px]">
                                         Cancel
                                     </button>
                                 </div>
