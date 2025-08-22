@@ -13,7 +13,7 @@ export function useAuth() {
         email: "",
         email_verified: false,
         phone_verified: false,
-        role: "vendor",
+        role: "",
         sub: ""
     });
     const [logoutState, setLogoutState] = useState({
@@ -23,32 +23,35 @@ export function useAuth() {
     });
 
     useEffect(() => {
-        // This effect will only run client-side
-        async function checkAuth() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                console.log(session);
-                
-                if (!session) {
-                    if (pathname === "/login") setLoadingSession(false);
-                    if (pathname.includes("dashboard")) navigate("/login");
-                } else {
-                    setIsAuthenticated(true);
-                    setSessionUserData(session.user.user_metadata);
-
-                    // If there's an active session and user is on login page, move user to dashboard
-                    if (pathname === "/" || pathname === "/login" || pathname === "/signup") navigate(`/dashboard/${session.user.user_metadata.role}`);
-                }
-            } catch (error) {
-                console.error("Auth check error:", error);
-                setIsAuthenticated(false);
-            } finally {
-                setLoadingSession(false);
-            }
-        }
-        
         checkAuth();
-    }, [navigate, pathname]);
+    }, []);
+
+    async function checkAuth() {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            console.log(session);
+            
+            if (!session) {
+                if (pathname === "/login") setLoadingSession(false);
+                if (pathname.includes("dashboard")) navigate("/login");
+            } else {
+                setIsAuthenticated(true);
+                setSessionUserData(session.user.user_metadata);
+
+                // If there's an active session and user is on login page, move user to dashboard
+                if (pathname === "/" || pathname === "/login" || pathname === "/signup") navigate(`/dashboard/${session.user.user_metadata.role}`);
+
+                if (!pathname.includes(session.user.user_metadata.role)) {
+                    navigate(`/dashboard/${session.user.user_metadata.role}`);
+                }
+            }
+        } catch (error) {
+            console.error("Auth check error:", error);
+            setIsAuthenticated(false);
+        } finally {
+            setLoadingSession(false);
+        }
+    }
 
     const logout = async () => {
         setLogoutState(prev => ({...prev, loading: true}));

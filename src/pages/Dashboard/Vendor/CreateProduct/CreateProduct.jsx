@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "../../../../lib/supabase";
 import { useAuth } from "../../../../utils/hooks/useAuth";
 import Button from "../../../../components/Button/Button";
 import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
 import Toast from "../../../../components/Toast/Toast";
+import ImageUpload from "../../../../components/ImageUpload/ImageUpload";
 
 const CreateProduct = () => {
     const [formData, setFormData] = useState({
@@ -18,25 +19,23 @@ const CreateProduct = () => {
     const { sessionUserData } = useAuth();
     const vendor_id = sessionUserData.sub;
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+    const imageUploadRef = useRef();
 
     const handleFormChange = (e) => {
-        const { id, value, files } = e.target;
-        
-        if (id === "image") {
-            const file = files[0];
-            if (file && file.size > MAX_FILE_SIZE) {
-                setToast({
-                    type: "error",
-                    message: "Image size should not exceed 5MB"
-                });
-                e.target.value = ''; // Reset file input
-                return;
-            }
-            setImageFile(file);
-        } else {
-            setFormData(prev => ({...prev, [id]: value}));
-        }
+        const { id, value } = e.target;
+        setFormData(prev => ({...prev, [id]: value}));
     }
+
+    const handleImageSelect = (file) => {
+        setImageFile(file);
+    };
+
+    const handleImageError = (errorMessage) => {
+        setToast({
+            type: "error",
+            message: errorMessage
+        });
+    };
 
     const validateForm = () => {
         if (!formData.name.trim()) {
@@ -68,14 +67,6 @@ const CreateProduct = () => {
             setToast({ 
                 type: "error",
                 message: "Product image is required"
-            });
-            return false;
-        }
-
-        if (imageFile.size > MAX_FILE_SIZE) {
-            setToast({ 
-                type: "error",
-                message: "Image size should not exceed 5MB"
             });
             return false;
         }
@@ -154,6 +145,7 @@ const CreateProduct = () => {
                 fileUrl: ""
             });
             setImageFile(null);
+            imageUploadRef.current?.clearPreview();
             e.target.reset();
         } catch (error) {
             setToast({ 
@@ -175,24 +167,25 @@ const CreateProduct = () => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <h1>Create Product</h1>
-            <p>Fill out the form below to add a new product</p>
+            <h1 className="text-2xl font-extrabold ">  Create Product</h1>
+            
+            <p className="text-gray-500 text-sm">Fill out the form below to add a new product</p>
 
-            <form onSubmit={handleFormSubmission} className="space-y-2">
-                <div id="name-input">
-                    <label htmlFor="name">Name</label>
-                    <input type="text" id="name" className="border" onChange={handleFormChange} placeholder="e.g Comfy shorts" />
+            <form onSubmit={handleFormSubmission} className="space-y-2 border-2 border-gray-200 p-5 rounded-lg mt-5 ">
+                <div id="name-input" className="">
+                    <label htmlFor="name" className="text-sm font-medium">Name</label>
+                    <input type="text" id="name" className="border-1 border-gray-400 rounded-md w-full px-3 py-2" onChange={handleFormChange} placeholder="e.g Comfy shorts" />
                 </div>
                 <div id="description-input">
-                    <label htmlFor="description">Description</label>
-                    <textarea type="text" id="description" className="border" onChange={handleFormChange} placeholder="Provide a detailed description of your product" />
+                    <label htmlFor="description" className="text-sm font-medium">Description</label>
+                    <textarea type="text" id="description" className="border-1 border-gray-400 rounded-md w-full px-3 py-2" onChange={handleFormChange} placeholder="Provide a detailed description of your product" />
                 </div>
                 <div id="price-input">
-                    <label htmlFor="price">Price</label>
+                    <label htmlFor="price" className="text-sm font-medium">Price</label>
                     <input 
                         type="text" 
                         id="price" 
-                        className="border" 
+                        className="border-1 border-gray-400 rounded-md w-full px-3 py-2 " 
                         value={formData.price === 0 ? "" : `₦${new Intl.NumberFormat('en-NG').format(formData.price)}`}
                         onChange={e => {
                             // Remove non-digit characters and parse to number
@@ -204,25 +197,25 @@ const CreateProduct = () => {
                         }}
                         placeholder="₦ 0.00" 
                     />
-                </div>                
-                <div id="image-input">
-                    <label htmlFor="image">Image Upload (Max 5MB)</label>
-                    <input 
-                        type="file" 
-                        name="image" 
-                        className="border" 
-                        onChange={handleFormChange}  
-                        id="image" 
-                        accept="image/*"
-                    />
                 </div>
 
-                <Button 
+                <div id="image-input" className="mt-4">
+                    <label htmlFor="image" className="text-sm font-medium">Image Upload (Max 5MB)</label>
+                    <ImageUpload 
+                        ref={imageUploadRef}
+                        onSelect={handleImageSelect}
+                        onError={handleImageError}
+                        maxFileSize={MAX_FILE_SIZE}
+                    />
+                </div>
+            
+            <div className="rounded-lg mt-8 mb-6 justify-center flex items-center">
+                <Button className="w-64 py-2 rounded-md "
                     disabled={isLoading} 
                     type="bg-black"
                 >
                     {isLoading ? (
-                        <div className="gap-2 justify-center flex items-center">
+                        <div>
                             <InlineSpinner />
                             Uploading Product...
                         </div>
@@ -230,6 +223,7 @@ const CreateProduct = () => {
                         'Upload Product'
                     )}
                 </Button>
+            </div>    
             </form>
         </div>
     );
