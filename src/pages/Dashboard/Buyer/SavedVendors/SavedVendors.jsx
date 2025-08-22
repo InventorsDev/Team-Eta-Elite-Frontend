@@ -14,7 +14,7 @@ const SavedVendors = () => {
             id: 2,
             name: "Tech Solutions",
             description: "Specializes in all kinds of laptops and tech accesories",
-            rating: 5,
+            rating: 1,
             reviews: 200,
         },
         {
@@ -35,12 +35,12 @@ const SavedVendors = () => {
             id: 5,
             name: "Priscilla Foods",
             description: "Specializes in all kinds of foods and catering services",
-            rating: 5,
+            rating:0,
             reviews: 150,
         },
         {
             id: 5,
-            name: "Priscilla Foods",
+            name: "Yakoyo Foods",
             description: "Specializes in all kinds of foods and catering services",
             rating: 2,
             reviews: 15,
@@ -53,13 +53,13 @@ const SavedVendors = () => {
             <h1 className="text-2xl font-bold">Saved Vendors</h1>
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
                 {vendors.map((vendor)=>(
-                    <div key={vendor.id} className="relative border-2 mb-2 border-[#00000003]  p-5 flex flex-col rounded-[10px] shadow-md ">
+                    <div key={vendor.id} className="relative border-2 mb-2 border-[#00000003]  p-6 flex flex-col rounded-[10px] shadow-md ">
                         <h2 className="font-bold text-[20px] ">{vendor.name}</h2>
                         <svg xmlns="http://www.w3.org/2000/svg" 
                             fill="#0000001A" viewBox="0 0 24 24" 
                             strokeWidth={1.5} 
                             stroke="#0000001A" 
-                            className=" absolute top-4 right-3.5 size-6">
+                            className=" absolute top-5 right-2 size-4">
                             <path 
                                 strokeLinecap="round" 
                                 strokeLinejoin="round" 
@@ -68,8 +68,8 @@ const SavedVendors = () => {
                                     2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 
                                     1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                         </svg>
-                        <p className="text-gray-500 my-2 font-normal ">{vendor.description}</p>
-                        <div className="flex my-5 items-center justify-between">
+                        <p className="text-neutral-500 my-2 font-normal">{vendor.description}</p>
+                        <div className="flex my-5 flex-wrap items-center justify-between">
                             {starRating({ rating: vendor.rating })}
                             <span className="text-neutral-500 font-semibold">
                                 ({vendor.reviews} reviews)
