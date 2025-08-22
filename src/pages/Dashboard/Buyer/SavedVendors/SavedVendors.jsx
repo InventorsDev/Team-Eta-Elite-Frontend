@@ -1,7 +1,7 @@
-const SavedVendors = () => {
+const SavedVendors = (header) => {
     return (
         <div>
-            <h1>Saved Vendors Page</h1>
+            <div><h1 className="text-lg font-bold">Saved Vendors</h1></div>
         </div>
     );
 }
