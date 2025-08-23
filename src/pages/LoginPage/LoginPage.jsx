@@ -54,7 +54,7 @@ const LoginPage = () => {
                 message: "You have signed in successfully.",
                 type: "success",
             });
-            setTimeout(() => navigate(`/dashboard/${data.user.user_metadata.role}`), 2000);
+            setTimeout(() => navigate(`/dashboard/${data.user.user_metadata.role}/`), 2000);
         } else {
             setToast({
                 message: typeof error !== "string" ? error.message: error || "Failed to signin.",
