@@ -112,7 +112,7 @@ const Settings = () => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <h1 className="text-4xl font-bold">Settings</h1>
+            <h1 className="text-2xl font-bold">Settings</h1>
             <div className="mt-10   border-1 border-[#0000001A] p-7 rounded-lg shadow-md">
                 <form onSubmit={handlePasswordSubmit}>
                     <h2 className="text-[22px] font-semibold">Change password</h2>
