@@ -132,7 +132,7 @@ const Overview = () => {
                     >
                         <div className="flex items-center gap-2 ">
                             <span className="text-2xl">+</span>
-                            <span>Create New Product</span>
+                            <span>Add New Product</span>
                         </div>
                     </Link>
                 </div>

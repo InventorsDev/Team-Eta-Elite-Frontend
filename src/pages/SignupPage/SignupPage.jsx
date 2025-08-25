@@ -65,7 +65,13 @@ const SignupPage = () => {
                 options: {
                     data: {
                         display_name: name,
-                        role: role
+                        role: role,
+                        total_earned: 0,
+                        escrow_balance: 0,
+                        bank_sort_code: "",
+                        bank_name: "",
+                        account_name: "",
+                        account_number: ""
                     }
                 }
             },
