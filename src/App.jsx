@@ -8,6 +8,7 @@ import VendorDashboard from "./pages/Dashboard/Vendor/Vendor";
 import BuyerDashboard from "./pages/Dashboard/Buyer/Buyer";
 import ProductsListing from "./pages/Dashboard/ProductsListing/ProductsListing";
 import ProductDetails from "./pages/Dashboard/ProductsListing/ProductDetails/ProductDetails";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
 function App() {
   const { loadingSession } = useAuth();
@@ -27,6 +28,7 @@ function App() {
         <Route path="/dashboard/buyer/*" loader={LoadingUI} element={<BuyerDashboard />} />
         <Route path="/products/" loader={LoadingUI} element={<ProductsListing />} />
         <Route path="/products/:id" loader={LoadingUI} element={<ProductDetails />} />
+        <Route path="*" loader={LoadingUI} element={<NotFoundPage />} />
       </Routes>
     </>
   )
