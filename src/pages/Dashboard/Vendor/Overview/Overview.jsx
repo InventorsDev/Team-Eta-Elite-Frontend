@@ -24,12 +24,17 @@ const Overview = () => {
 
     const fetchOverviewData = async () => {
         setLoading(true);
+
+        // get user id 
+        const { data: claims } = await supabase.auth.getClaims();
+        const vendorId = claims.claims.sub;
         
         // Fetch count of "Products" table
         try {
             const { count, error } = await supabase
                 .from('Products')
-                .select('*', { count: 'exact', head: true });
+                .select('*', { count: 'exact', head: true })
+                .eq("vendor_id", vendorId);
     
             if (!error) setOverviewData(prev => ({...prev, products: count}));
         } catch (error) {
