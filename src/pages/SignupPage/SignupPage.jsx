@@ -7,6 +7,7 @@ import Button from "../../components/Button/Button";
 import InlineSpinner from "../../components/InlineSpinner/InlineSpinner";
 import Toast from "../../components/Toast/Toast";
 import Modal from "../../components/Modal/Modal";
+import slugify from "slugify";
 
 const SignupPage = () => {
     const [formErrors, setFormErrors] = useState({
@@ -56,7 +57,10 @@ const SignupPage = () => {
             password: ""
         });
         setLoading(true);
-
+        
+        // Prepare unique slug for vendor
+        const slug = role === "vendor" ? generateVendorSlug(name): null;
+        
         // make signup API request
         const { data, error } = await supabase.auth.signUp(
             {
@@ -66,12 +70,13 @@ const SignupPage = () => {
                     data: {
                         display_name: name,
                         role: role,
-                        total_earned: 0,
+                        total_earned: role === "vendor"? 0: null,
                         escrow_balance: 0,
                         bank_sort_code: "",
                         bank_name: "",
                         account_name: "",
-                        account_number: ""
+                        account_number: "",
+                        slug: slug
                     }
                 }
             },
@@ -95,6 +100,12 @@ const SignupPage = () => {
 
         // End Loading Sequence
         setLoading(false);
+    }
+
+    function generateVendorSlug(name) {
+        const baseSlug = slugify(name, { lower: true, strict: true });
+        const shortId = Math.random().toString(36).substring(2, 8);
+        return `${baseSlug}-${shortId}`;
     }
 
     return (
