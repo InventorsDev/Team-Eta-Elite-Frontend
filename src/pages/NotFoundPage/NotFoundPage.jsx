@@ -10,8 +10,6 @@ const NotFoundPage = () => {
                 </button>
             </div>
         </div>
-    
-
     );
 }
 
