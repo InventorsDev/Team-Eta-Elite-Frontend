@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 const NotFoundPage = () => {
     return (
         <div className="w-full h-screen flex flex-col justify-center items-center">
@@ -5,9 +7,9 @@ const NotFoundPage = () => {
             <h3 className="font-semibold text-gray-700 text-3xl">Not Found</h3>   
             <p className="mt text-gray-800 fonnt-bold">The page you're looking for does not exist!</p>    
             <div className="flex space-x-1">
-                <button className="p-2 bg-gray-600 text-white rounded-md mt-3">
+                <Link to={"/"} className="p-2 bg-gray-600 text-white rounded-md mt-3 cursor-pointer">
                     Go Home
-                </button>
+                </Link>
             </div>
         </div>
     );
