@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useEffect, useState } from "react";
 import { useWindowSize } from "../../utils/hooks/useWindowSize";
@@ -8,15 +8,18 @@ import Toast from "../../components/Toast/Toast";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import EmptyListUI from "../../components/EmptyListUI/EmptyListUI";
 import Skeleton from "../../components/Skeleton/Skeleton";
+import ProductsDetails from "../../components/ProductDetails/ProductsDetails";
 
 const VendorListing = () => {
+    const [searchParams, _] = useSearchParams();
+    const productId = searchParams.get("product_id");
     const { slug } = useParams();
     const [productsList, setProductsList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
     const [displayName, setDisplayName] = useState("");
     const [toast, setToast] = useState(null);
-
+    const [showProductDetails, setShowProductDetails] = useState(false);
     const isWide = useWindowSize();
 
     useEffect(() => {
@@ -63,6 +66,14 @@ const VendorListing = () => {
         }
     }, [userId]);
 
+    useEffect(() => {
+        if (productId) {
+            setShowProductDetails(true);
+        } else {
+            setShowProductDetails(false);
+        }
+    }, [productId]);
+
     const fetchVendorProducts = async () => {
         setLoading(true);
 
@@ -91,6 +102,10 @@ const VendorListing = () => {
                     message={toast.message}
                     onClose={() => setToast(null)}
                 />
+            )}
+
+            {showProductDetails && (
+                <ProductsDetails productId={productId} />
             )}
 
             <header className="w-full flex gap-4 sm:gap-8 items-center">
@@ -156,6 +171,7 @@ const VendorListing = () => {
                 {!loading && productsList.length > 0 && productsList.map(item => (
                     <ProductCard 
                         key={item.id}
+                        id={item.id}
                         productName={item.name}
                         imgSrc={item.image_url}
                         status={item.status}
