@@ -16,6 +16,10 @@ const ProductsDetails = ({ productId }) => {
 
     useEffect(() => {        
         const fecthProductDetails = async () => {
+            if (!productId) {
+                return;
+            }
+
             setLoading(true);
 
             try {
