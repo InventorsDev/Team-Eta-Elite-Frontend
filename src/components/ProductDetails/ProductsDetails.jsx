@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatToNaira } from "../../utils/helpers/formatToNaira";
 import { supabase } from "../../lib/supabase";
@@ -14,7 +14,7 @@ const ProductsDetails = ({ productId }) => {
     const isWide = useWindowSize();
     const navigate = useNavigate();
 
-    useEffect(() => {        
+    useLayoutEffect(() => {        
         const fecthProductDetails = async () => {
             if (!productId) {
                 return;
@@ -79,9 +79,15 @@ const ProductsDetails = ({ productId }) => {
 
             <div 
                 id="product-details-container" 
-                className="rounded-t-4xl overflow-y-scroll flex flex-col gap-4 sm:gap-8 lg:flex-row p-8 lg:p-16 relative top-[10%] h-[90%] bg-white xl:p-24 xl:py-16"
+                className={`
+                    rounded-t-4xl overflow-y-scroll flex flex-col gap-4 sm:gap-8 
+                    lg:flex-row p-8 lg:p-16 relative top-[10%] h-[90%] bg-white xl:p-24 xl:py-16
+                `}
             >
-                <button onClick={handleCloseProductDescription} id="close-modal" className="absolute hidden lg:block top-5 cursor-pointer right-5 p-2 rounded-full font-bold text-gray-500 bg-gray-200">
+                <button 
+                    onClick={handleCloseProductDescription} id="close-modal" 
+                    className="absolute hidden lg:block top-5 cursor-pointer right-5 p-2 rounded-full font-bold text-gray-500 bg-gray-200"
+                >
                     {/* X-icon */}
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
