@@ -6,8 +6,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import { useAuth } from "./utils/hooks/useAuth";
 import VendorDashboard from "./pages/Dashboard/Vendor/Vendor";
 import BuyerDashboard from "./pages/Dashboard/Buyer/Buyer";
-import ProductsListing from "./pages/Dashboard/ProductsListing/ProductsListing";
-import ProductDetails from "./pages/Dashboard/ProductsListing/ProductDetails/ProductDetails";
+import VendorListing from "./pages/VendorListing/VendorListing";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
 function App() {
@@ -26,8 +25,7 @@ function App() {
         <Route path="/dashboard/" loader={LoadingUI} element={<Dashboard />} />
         <Route path="/dashboard/vendor/*" loader={LoadingUI} element={<VendorDashboard />} />
         <Route path="/dashboard/buyer/*" loader={LoadingUI} element={<BuyerDashboard />} />
-        <Route path="/products/" loader={LoadingUI} element={<ProductsListing />} />
-        <Route path="/products/:id" loader={LoadingUI} element={<ProductDetails />} />
+        <Route path="/vendors/:slug" loader={LoadingUI} element={<VendorListing />} />
         <Route path="*" loader={LoadingUI} element={<NotFoundPage />} />
       </Routes>
     </>

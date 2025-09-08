@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react";
 import Toast from "../../../components/Toast/Toast";
+import { useAuth } from "../../../utils/hooks/useAuth";
+import AddBank from "../../../components/AddBank/AddBank";
 
 const Settings = () => {
     const [currentPassword, setcurrentPassword] = useState("");
     const [newPassword, setnewPassword] = useState("");
     const [confirmPassword, setconfirmPassword] = useState("");
-    const [accountName, setaccountName] = useState("");
-    const [accountNumber, setaccountNumber] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const [accountError, setAccountError] = useState("");
-    const [bankName, setbankName] = useState("First Bank");
     const [toast, setToast] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
-
+    const { sessionUserData } = useAuth();
+    const userRole = sessionUserData.role;
+ 
     useEffect(() => {
-
         if (confirmPassword.length > 0) {
             if (confirmPassword !== newPassword) {
                 setPasswordError("Passwords do not match!");
@@ -26,24 +25,10 @@ const Settings = () => {
         }
     }, [newPassword, confirmPassword]); 
 
-    useEffect(() => {
-        
-        if (accountNumber.length === 0) {
-            setAccountError("");
-        } else if (!/^\d+$/.test(accountNumber)) {
-            setAccountError("Account number must be only numbers");
-        } else if (accountNumber.length !== 10) {
-            setAccountError("Account number must be 10 digits");
-        } else {
-            setAccountError("");
-        }
-    }, [accountNumber]);
-
     const onDelete = () => {
-
         setToast({
-                message: "Acount deleted succesfully",
-                type: "error",
+            message: "Acount deleted succesfully",
+            type: "error",
         }); 
         // NAVIGATE &
         // Delete logics
@@ -83,25 +68,6 @@ const Settings = () => {
 
         //  Add logic to update password (API call)
     };
-
-    const handleAccountSubmit = (e) => {
-        e.preventDefault();
-        if (accountError) {
-            setToast({
-                message: "Please fix the account number error before submitting",
-                type: "error",
-            });   
-            return;
-        }
-        // Proceed with API call to add account
-        setToast({
-            message: "Bank account added successfully",
-            type: "success",
-        });
-        console.log("Account added:", { accountName, accountNumber });
-        setaccountName("");
-        setaccountNumber("");
-    }
 
     return (
         <div id="settingsPage">
@@ -171,67 +137,9 @@ const Settings = () => {
                         </button>
                     </div>
                 </form>
+
                 {/* Bank details */}
-                <form onSubmit={handleAccountSubmit}  className="mt-10">
-                    <h2 className="text-[22px] font-semibold">Add Bank Account</h2>
-                    <div className="mt-7">
-                        <label htmlFor="account-name" 
-                            className="text-[#000000CC] font-semibold block mb-2">
-                            Account Holder Name
-                        </label>
-                        <input type="name" 
-                            id="account-name" 
-                            className="border-1  border-[#00000080] p-2 w-full rounded-[10px]" 
-                            placeholder="Account full name" 
-                            value={accountName}
-                            onChange={(e) =>setaccountName(e.target.value)}
-                            required 
-                        />
-                    </div>
-
-                    <div className="mt-7">
-                        <label htmlFor="account-name" 
-                            className="text-[#000000CC] font-semibold block mb-2">
-                           Bank Name
-                        </label>
-                        <select type="name" 
-                            id="bank-name" 
-                            className="border-1  border-[#00000080] p-2 w-full rounded-[10px]" 
-                            placeholder="Account full name" 
-                            value={bankName}
-                            onChange={(e) =>setbankName(e.target.value)}
-                            required >
-                            {/* <option value="" disabled>Select Bank</option> */}
-                            <option className="border-1 rounded-2xl" value="First Bank">First Bank</option>
-                        </select>
-                    </div>
-
-                    {accountError && (
-                        <span className="transition font-medium text-red-500 ">{accountError}</span>
-                    )}
-                    <div className="mt-7">
-                        <label htmlFor="account-number" 
-                            className="text-[#000000CC] font-semibold block mb-2">
-                            Account Number
-                        </label>
-                        <input type="numb" 
-                            id="account-number" 
-                            className="border-1  border-[#00000080] p-2 w-full rounded-[10px]" 
-                            placeholder="0123456789"
-                            value={accountNumber}
-                            onChange={(e) =>setaccountNumber(e.target.value)} 
-                            required 
-                        />
-                    </div>
-                    <div className="flex w-full mt-5 p-2">
-                        <button
-                            className="bg-[var(--primary-color)] active:scale-95 cursor-pointer rounded-[10px] text-white ml-auto px-12 py-4  hover:bg-[var(--primary-color)] transition-all duration-300"
-                            type="submit"
-                        >
-                            Add Account
-                        </button>
-                    </div>
-                </form>
+                {userRole !== "vendor" && <AddBank />}
 
                 <div className="mt-10 flex flex-col gap-2">
                     <h2 className="text-[22px] font-semibold">Enable 2FA (Two Factor Authentication)</h2>

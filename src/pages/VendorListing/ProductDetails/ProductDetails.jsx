@@ -1,7 +1,7 @@
 const ProductDetails = () => {
     return (
         <div>
-            <h1>This is the Products details page.</h1>
+            This is the Product Details Page
         </div>
     );
 }

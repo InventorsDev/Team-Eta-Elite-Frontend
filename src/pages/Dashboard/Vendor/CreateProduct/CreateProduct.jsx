@@ -46,10 +46,18 @@ const CreateProduct = () => {
             return false;
         }
 
-        if (!formData.description.trim()) {
+        if (!formData.description.trim() ) {
             setToast({ 
                 type: "error",
                 message: "Product description is required"
+            });
+            return false;
+        }
+
+        if (formData.description.trim().split(" ").length < 30) {
+            setToast({ 
+                type: "error",
+                message: "Your description must contain at least 30 words"
             });
             return false;
         }

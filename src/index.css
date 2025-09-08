@@ -21,6 +21,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+button, a {
+  @apply active:scale-[95%];
+}
+
+#product-details-container::-webkit-scrollbar {
+  @apply hidden scroll-smooth;
+}
+
 .ease-transition {
   @apply transition-all duration-300 ease-out;
 }
