@@ -3,18 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { formatToNaira } from "../../utils/helpers/formatToNaira";
 import { supabase } from "../../lib/supabase";
 import { useWindowSize } from "../../utils/hooks/useWindowSize";
+import { useAuth } from "../../utils/hooks/useAuth";
 import Button from "../Button/Button";
 import InlineSpinner from "../InlineSpinner/InlineSpinner";
 import Toast from "../Toast/Toast";
-import { useAuth } from "../../utils/hooks/useAuth";
+import { PaystackButton } from "react-paystack";
 
 const ProductsDetails = ({ productId }) => {
     const [loading, setLoading] = useState(false);
     const [productDetails, setProductDetails] = useState(null)
     const [toast, setToast] = useState(null);
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, sessionUserData } = useAuth();
     const isWide = useWindowSize();
     const navigate = useNavigate();
+
+    const paystackConfig = {
+        reference: (new Date()).getTime().toString(),
+        email: sessionUserData.email,  
+        amount: (productDetails?.price * 100) || 0, // in prod, we would add payment charges
+        publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+        text: 'Paystack Payment Button',
+        onSuccess: (reference) => handlePaystackPaymentSuccess(reference),
+        onClose: () => handlePaystackPaymentFailure(),
+    }
 
     useLayoutEffect(() => {        
         const fecthProductDetails = async () => {
@@ -79,8 +90,34 @@ const ProductsDetails = ({ productId }) => {
             return;
         }
 
+        // make sure users have put in their bank details on the dashboard (there should be a refund button on buyer's dashbaord)
+
+        // implement logic to prevent vendors from purchasing... (for now - later, we can work on switching roles)
+
+        // click actual paystack payment button
+        const paystackButton = document.querySelector(".paystack-button");
+        paystackButton.click();
         console.log("Item Purchased!");
     }
+
+    const handlePaystackPaymentSuccess = async (referenceObject) => {
+        setToast({ 
+            type: "success",
+            message: "Payment successful with reference " + referenceObject.reference
+        });
+
+        // Generate code for this buyer's order
+
+        // add records to supabase table 
+
+    }
+
+    const handlePaystackPaymentFailure = () => {
+        setToast({ 
+            type: "error",
+            message: "Oops, Payment Failed."
+        });
+    };
 
     return (
         <div id="product-details-modal" className="h-screen w-full z-50 fixed top-0 left-0">
@@ -151,6 +188,9 @@ const ProductsDetails = ({ productId }) => {
                                 >
                                     Buy Now
                                 </Button>
+
+                                {/* actual hidden paystack payment button */}
+                                <PaystackButton className="paystack-button hidden" {...paystackConfig} />
                             </div>
                         </div>
                     </>
