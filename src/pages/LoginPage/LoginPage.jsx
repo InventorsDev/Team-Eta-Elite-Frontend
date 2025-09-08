@@ -1,5 +1,5 @@
-import { useState, useRef, useContext } from "react";
-import { Link, useNavigate} from "react-router-dom";
+import { useState, useRef } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { isValidEmail } from "../../utils/helpers/isEmailValid";
 import Button from "../../components/Button/Button";
 import Toast from "../../components/Toast/Toast";
@@ -13,6 +13,8 @@ const LoginPage = () => {
     });
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState(null);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const redirect_path = searchParams.get("redirect_to");
     const navigate = useNavigate();
 
     const emailRef = useRef(null);
@@ -54,6 +56,12 @@ const LoginPage = () => {
                 message: "You have signed in successfully.",
                 type: "success",
             });
+
+            if (redirect_path) {
+                setTimeout(() => navigate(redirect_path), 2000);
+                return;
+            }
+
             setTimeout(() => navigate(`/dashboard/${data.user.user_metadata.role}/`), 2000);
         } else {
             setToast({
@@ -85,7 +93,7 @@ const LoginPage = () => {
                 <h1 className='text-4xl font-extrabold lg:text-5xl'>Welcome Back!</h1>
                 <p className='text-sm lg:text-base'>Enter your details to access your dashboard.</p>
                 <Link 
-                    to={"/signup"} 
+                    to={!redirect_path ? "/signup": `/signup?redirect_to=${redirect_path}`} 
                     className="rounded-3xl border border-white text-white p-2 px-4 cursor-pointer w-fit self-center text-sm mt-4 lg:text-lg lg:px-8"
                 >
                     SIGN UP

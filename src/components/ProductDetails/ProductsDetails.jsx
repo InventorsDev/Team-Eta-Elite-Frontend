@@ -6,11 +6,13 @@ import { useWindowSize } from "../../utils/hooks/useWindowSize";
 import Button from "../Button/Button";
 import InlineSpinner from "../InlineSpinner/InlineSpinner";
 import Toast from "../Toast/Toast";
+import { useAuth } from "../../utils/hooks/useAuth";
 
 const ProductsDetails = ({ productId }) => {
     const [loading, setLoading] = useState(false);
     const [productDetails, setProductDetails] = useState(null)
     const [toast, setToast] = useState(null);
+    const { isAuthenticated } = useAuth();
     const isWide = useWindowSize();
     const navigate = useNavigate();
 
@@ -59,6 +61,25 @@ const ProductsDetails = ({ productId }) => {
         const pathWithoutSearchParams = pathname.split("?")[0]
 
         navigate(pathWithoutSearchParams);
+    }
+
+    const handlePurchase = () => {
+        if (!isAuthenticated) {
+            setToast({ 
+                type: "neutral",
+                message: "Oops, You need to login to protect and track your purchase"
+            });
+
+            setTimeout(() => {
+                const pathname = window.location.pathname;
+                const searchParams = window.location.search;
+                navigate(`/login?redirect_to=${pathname}${searchParams}`);
+            }, 5000);
+
+            return;
+        }
+
+        console.log("Item Purchased!");
     }
 
     return (
@@ -123,7 +144,13 @@ const ProductsDetails = ({ productId }) => {
                             <p id="product-description" className="leading-loose text-justify sm:leading-[38px] font-headings">{productDetails?.description}</p>
                             <div id="price-buy" className="flex flex-col sm:flex-row gap-4 w-full justify-between">
                                 <h1 className="font-bold sm:text-4xl text-gray-600">{!isWide? "Price:": ""} {formatToNaira(productDetails?.price)}</h1>
-                                <Button type="bg-black" className="py-2 w-full text-white bg-gray-600">Buy Now</Button>
+                                <Button 
+                                    type="bg-black" 
+                                    className="py-2 w-full text-white bg-gray-600"
+                                    onClick={handlePurchase}
+                                >
+                                    Buy Now
+                                </Button>
                             </div>
                         </div>
                     </>
