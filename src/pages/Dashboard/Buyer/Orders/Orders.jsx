@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../../../lib/supabase";
 import Table from "../../../../components/Table/Table";
 import Toast from "../../../../components/Toast/Toast";
@@ -6,8 +6,8 @@ import EmptyListUI from "../../../../components/EmptyListUI/EmptyListUI";
 import Skeleton from "../../../../components/Skeleton/Skeleton";
 import Button from "../../../../components/Button/Button";
 import Modal from "../../../../components/Modal/Modal";
-import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
 import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
+import { formatDateTime } from "../../../../utils/helpers/formatDateTime";
 import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
 
 const Orders = () => {
@@ -19,9 +19,6 @@ const Orders = () => {
         product_name: "",
         id: ""
     });
-    const [code, setCode] = useState(["", "", "", ""]);
-    const [loadingCodeSubmission, setLoadingCodeSubmission] = useState(false);
-    const inputRefs = useRef([]);
     const isWide = useWindowSize();
 
     useEffect(() => {
@@ -52,47 +49,9 @@ const Orders = () => {
         setTimeout(() =>  setLoading(false), 1000);
     }
 
-    const handleChange = (e, index) => {
-        const value = e.target.value;
-
-        // Only allow digits
-        if (!/^[0-9]?$/.test(value)) return;
-
-        const newCode = [...code];
-        newCode[index] = value;
-        setCode(newCode);
-
-        // move to next input
-        if (value && index < 3) {
-          inputRefs.current[index + 1].focus();
-        }
-    };
-
-    // Handle backspace to move focus back
-    const handleKeyDown = (e, index) => {
-        if (e.key === "Backspace" && !code[index] && index > 0) {
-            inputRefs.current[index - 1].focus();
-        }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setLoadingCodeSubmission(true);
-        const finalCode = code.join("");
-        console.log("Submitted code:", finalCode);
-        setTimeout(() => setLoadingCodeSubmission(false), 2000);
-    };
-
     const handleShowConfirmDeliveryModal = (order) => {
         setShowDeliveryConfirmationModal(true);
         setSelectedOrder(order);
-        setTimeout(() => { 
-            if (inputRefs.current[0].value === "") {
-                inputRefs.current[0].focus();
-            } else {
-                inputRefs.current[3].focus();
-            }
-        }, 200);
     }
 
     return (
@@ -107,55 +66,33 @@ const Orders = () => {
 
             {showDeliveryConfirmationModal && (
                 <Modal type={"blur"}>
-                    <h1 className="text-lg font-semibold">
-                        Confirm the delivery code of <b className="font-extrabold">{selectedOrder.product_name}</b>
-                    </h1>
-                    <p className="text-sm">
-                        Get code from your customer and confirm before handing goods out.
-                    </p>
-                    <div className="mt-4 flex flex-col gap-4">
-                        <div className="flex justify-center gap-2">
-                            {code.map((digit, index) => (
-                            <input
-                                key={index}
-                                type="text"
-                                inputMode="numeric"
-                                maxLength={1}
-                                value={digit}
-                                onChange={(e) => handleChange(e, index)}
-                                onKeyDown={(e) => handleKeyDown(e, index)}
-                                ref={(el) => (inputRefs.current[index] = el)}
-                                className="w-12 h-12 text-center text-lg border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                            />
-                            ))}
-                        </div>
-
-                        <div className="flex mx-4 items-center gap-4" id="buttons-container">
-                            <Button 
-                                type="button"
-                                onClick={(e) => { 
-                                    e.preventDefault();
-                                    setShowDeliveryConfirmationModal(false);
-                                }}
-                                className={"bg-neutral-600 py-2 px-4 text-white border-2 border-neutral-300 hover:bg-neutral-700"}
-                            >
-                                Cancel
-                            </Button>
-                            <Button 
-                                onClick={handleSubmit}
-                                disabled={loadingCodeSubmission}
-                                className={"text-white py-2 px-4 bg-blue-500 border-2 border-blue-700 hover:bg-blue-700"}
-                                type="submit"
-                            >
-                                {loadingCodeSubmission
-                                    ? (<span>
-                                        <InlineSpinner className="px-2" /> Submitting ...
-                                    </span>)
-                                    : "Submit"
-                                }
-                            </Button>
-                        </div>
+                    {/* x-mark to close modal */}
+                    <div 
+                        onClick={() => setShowDeliveryConfirmationModal(false)}
+                        className="p-2 absolute top-2 right-2 rounded-full bg-gray-200 cursor-pointer text-black font-semibold active:scale-[95%]"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
                     </div>
+
+                    <h1 className="text-lg font-semibold">
+                        Confirm product delivery of <b className="font-extrabold">{selectedOrder.product_name}</b>
+                    </h1>
+                    <h1 className="text-8xl text-neutral-700 tracking-widest font-bold">
+                        3347
+                    </h1>
+                    <p className="flex gap-2 text-sm text-yellow-600 font-semibold">
+                        {/* caution icon */}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                            <path 
+                                strokeLinecap="round" strokeLinejoin="round" 
+                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" 
+                            />
+                        </svg>
+                        Only share this code with the vendor if goods are in good conditions.
+                    </p>
+                    <p className="text-red-500 font-semibold text-sm">(By sharing this code, you confirm that goods are delivered)</p>
                 </Modal>
             )}
 
@@ -174,15 +111,16 @@ const Orders = () => {
                 /> 
             )}
 
-            <Table headers={["Vendor's Name", "Product", "Price","Escrow Status", "Actions"]}>
+            <Table headers={["Date", "Vendor's Name", "Product", "Price","Delivery Status", "Actions"]}>
                 {ordersList.length > 0 && !loading && ordersList.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
+                        <td className="p-4">{formatDateTime(order.created_at).date}</td>
                         <td className="p-4">{order.vendor_name}</td>
                         <td className="p-4">{order.product_name}</td>
                         <td className="p-4">{formatToNaira(order.amount_paid)}</td>
                         <td className="p-4">
-                            {order.escrow_status === "held" ? (
-                                <span className="text-yellow-500 p-2 rounded-xl bg-yellow-100 text-sm">Held</span>
+                            {order.delivery_status === "pending" ? (
+                                <span className="text-yellow-500 p-2 rounded-xl bg-yellow-100 text-sm">Pending</span>
                             ) : (
                                 <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Delivered</span>
                             )}
