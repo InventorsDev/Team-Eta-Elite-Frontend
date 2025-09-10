@@ -9,7 +9,7 @@ import InlineSpinner from "../InlineSpinner/InlineSpinner";
 import Toast from "../Toast/Toast";
 import { PaystackButton } from "react-paystack";
 
-const ProductsDetails = ({ productId }) => {
+const ProductsDetails = ({ productId, vendorName }) => {
     const [loading, setLoading] = useState(false);
     const [productDetails, setProductDetails] = useState(null)
     const [toast, setToast] = useState(null);
@@ -89,6 +89,10 @@ const ProductsDetails = ({ productId }) => {
 
             return;
         }
+
+        // Fix redirect for buyer
+
+        // show alert 7 days delivery days by default
 
         // make sure users have put in their bank details on the dashboard (there should be a refund button on buyer's dashbaord)
 
@@ -176,12 +180,15 @@ const ProductsDetails = ({ productId }) => {
                             <img src={productDetails?.image_url} className="h-full w-full object-cover rounded-4xl" />
                         </div>
 
-                        <div id="product-details" className="p-4 lg:py-24 space-y-6 lg:space-y-8 lg:p-8">
+                        <div id="product-details" className="p-4 xl:py-0 space-y-6 lg:space-y-8 xl:p-8">
                             <h1 className="leading-[40px] text-4xl text-gray-900 font-extrabold">{productDetails?.name}</h1>
                             <p id="product-description" className="leading-loose text-justify sm:leading-[38px] font-headings">{productDetails?.description}</p>
+                            <p><b>Vendor Name:</b>  {vendorName}</p>
+                            <p><b>Expected delivery:</b>  5 - 7 days</p>
                             <div id="price-buy" className="flex flex-col sm:flex-row gap-4 w-full justify-between">
                                 <h1 className="font-bold sm:text-4xl text-gray-600">{!isWide? "Price:": ""} {formatToNaira(productDetails?.price)}</h1>
                                 <Button 
+                                    disabled={productDetails?.status !== "active"}
                                     type="bg-black" 
                                     className="py-2 w-full text-white bg-gray-600"
                                     onClick={handlePurchase}
