@@ -167,7 +167,7 @@ const CreateProduct = () => {
     }
 
     return (
-        <div id="CreateProductPage">
+        <div id="CreateProductPage" className="mt-10 md:mt-0">
             {toast && (
                 <Toast 
                     type={toast?.type}

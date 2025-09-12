@@ -52,7 +52,7 @@ const SavedVendors = () => {
         <div>
             <h1 className="text-2xl font-bold">Saved Vendors</h1>
             {savedVendors.length > 0 ? (
-                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-7">
                     {savedVendors.map((vendor)=>(
                         <div key={vendor.id} className="relative border-2 mb-2 border-[#00000003]  p-6 flex flex-col rounded-[10px] shadow-md ">
                             <h2 className="font-bold text-[20px] ">{vendor.name}</h2>

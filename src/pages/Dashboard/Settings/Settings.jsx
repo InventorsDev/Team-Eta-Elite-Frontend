@@ -70,7 +70,7 @@ const Settings = () => {
     };
 
     return (
-        <div id="settingsPage">
+        <div className="mt-10 md:mt-0" id="settingsPage">
              {toast && (
                 <Toast 
                     message={toast.message}

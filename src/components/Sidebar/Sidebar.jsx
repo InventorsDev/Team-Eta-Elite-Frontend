@@ -10,7 +10,7 @@ const Sidebar = ({ forVendor }) => {
     const location = useLocation();
     const pathname = location.pathname;
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false); 
 
     // Ensure sidebar is open on desktop by default
     useEffect(() => {
@@ -45,22 +45,21 @@ const Sidebar = ({ forVendor }) => {
         <div>
             {/* Hamburger Button (only mobile) */}
             <button
-                className="absolute top-12 left-4 z-50 md:hidden"
+                className="absolute cursor-pointer hover:scale-105 transition-all top-2 left-4 z-50 text-center justify-center flex md:hidden"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 {isOpen ? (
                     // Close (X) SVG
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        className="h-9 w-9 text-white" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" 
+                        viewBox="0 0 24 24" strokeWidth={1.7} stroke="#F9FAFB" className="size-11">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
+
                 ) : (
                     // Hamburger SVG
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        className="h-9 w-9 text-[var(--primary-color)]" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" 
+                        viewBox="0 0 24 24" strokeWidth={1.7} stroke="#4B5563" className=" size-11">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 )}
             </button>

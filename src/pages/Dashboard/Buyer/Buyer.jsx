@@ -20,7 +20,6 @@ const BuyerDashboardLayout = () => {
           md:ml-[325px]
           text-sm md:text-base
           overflow-x-hidden
-          overflow-y-scroll
         "
       >
         <Outlet />

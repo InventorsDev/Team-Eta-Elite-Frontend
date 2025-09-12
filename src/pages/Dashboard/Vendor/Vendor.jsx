@@ -9,7 +9,7 @@ import { Outlet, Routes, Route } from 'react-router-dom';
 
 const VendorDashboardLayout = () => {
   return (
-    <div className="flex min-h-[100dvh] overflow-x-hidden md:overflow-y-scroll md:overflow-x-hidden sm:mt-10 sm:ml-10  w-full">
+    <div className="flex min-h-[100dvh] overflow-x-hidden md:overflow-x-hidden sm:mt-10  w-full">
       {/* Sidebar (handles its own collapse on mobile) */}
       <div>
       <Sidebar forVendor />
@@ -20,7 +20,7 @@ const VendorDashboardLayout = () => {
         className="
           flex-1 w-full max-w-full
           p-4 sm:p-6 md:p-12
-          md:ml-[325px]    /* offset only on desktop */
+          md:ml-[325px]
           text-sm md:text-base
           overflow-x-hidden
           sm:mt-[-20px] md:mt-0
