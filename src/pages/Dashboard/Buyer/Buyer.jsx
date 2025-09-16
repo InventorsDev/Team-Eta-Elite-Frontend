@@ -14,7 +14,7 @@ const BuyerDashboardLayout = () => {
   return (
     <div className="flex md:flex-row flex-col min-h-[100dvh] w-full">
       {/* TopBar with menu button */}
-      <div className="sticky top-0 bg-white z-30">
+      <div className="fixed top-0 left-0 right-0 bg-white z-30">
         <TopBar onMenuClick={() => setIsSidebarOpen(true)} />
       </div>
 
@@ -22,7 +22,7 @@ const BuyerDashboardLayout = () => {
       {isSidebarOpen && (
 
         <div
-          className="fixed inset-0 z-30 transition-colors backdrop-blur-[2px] bg-black/50 md:hidden"
+          className="fixed w-full inset-0 z-30 transition-colors backdrop-blur-[2px] bg-black/50 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
@@ -39,7 +39,8 @@ const BuyerDashboardLayout = () => {
       <main
         className="
           flex-1 w-full max-w-full
-          p-4 sm:p-6 md:p-12
+          p-4 sm:p-6 md:p-12 
+          sm:pt-[90px] pt-[80px]
           md:ml-[325px]
           text-sm md:text-base
           overflow-x-hidden

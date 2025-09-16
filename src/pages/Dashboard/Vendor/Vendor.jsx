@@ -18,14 +18,14 @@ const VendorDashboardLayout = () => {
 
       {/* TopBar with menu button */}
       <div 
-        className="sticky top-0 bg-white z-30">
+        className="fixed left-0 right-0 bg-white z-30">
         <TopBar  onMenuClick={() => setIsSidebarOpen(true)} />
       </div>
 
       {/* Overlay when sidebar is open on mobile */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 z-30  transition-colors backdrop-blur-[2px] bg-black/50 md:hidden"
+          className="fixed w-full inset-0 z-30 transition-colors backdrop-blur-[2px] bg-black/50 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
@@ -43,7 +43,8 @@ const VendorDashboardLayout = () => {
       <main
         className="
           flex-1 w-full max-w-full
-          p-4 sm:p-6 md:p-12
+          p-4 sm:p-6 md:p-12 
+          sm:pt-[90px] pt-[80px]
           md:ml-[325px]
           text-sm md:text-base
           overflow-x-hidden
