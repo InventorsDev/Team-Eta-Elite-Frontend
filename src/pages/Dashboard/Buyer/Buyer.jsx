@@ -22,7 +22,7 @@ const BuyerDashboardLayout = () => {
       {isSidebarOpen && (
 
         <div
-          className="fixed inset-0 z-30 transition-colors bg-black/50 md:hidden"
+          className="fixed inset-0 z-30 transition-colors backdrop-blur-[2px] bg-black/50 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}
