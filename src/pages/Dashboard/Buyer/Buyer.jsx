@@ -1,15 +1,38 @@
+import { useState } from 'react';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import Orders from './Orders/Orders';
 import SavedVendors from './SavedVendors/SavedVendors';
 import Settings from '../Settings/Settings';
 import { Outlet, Routes, Route, Navigate } from 'react-router-dom';
+import TopBar from '../../../components/TopBar/TopBar';
 
 const BuyerDashboardLayout = () => {
+
+  // state for sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   return (
-      <div className="flex min-h-[100dvh] overflow-x-hidden m-10  ">
+    <div className="flex md:flex-row flex-col min-h-[100dvh] w-full">
+      {/* TopBar with menu button */}
+      <div className="sticky top-0 bg-white z-30">
+        <TopBar onMenuClick={() => setIsSidebarOpen(true)} />
+      </div>
+
+      {/* Overlay when sidebar is open on mobile */}
+      {isSidebarOpen && (
+
+        <div
+          className="fixed inset-0 z-30 transition-colors bg-black/50 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar (handles its own mobile overlay) */}
       <div>
-      <Sidebar />
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
       </div>
 
       {/* Main content */}

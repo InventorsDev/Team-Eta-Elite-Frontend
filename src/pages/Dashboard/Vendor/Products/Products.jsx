@@ -185,7 +185,7 @@ const Products = () => {
                 </Modal>
             )}
 
-            <header className="flex  mt-10 md:mt-0 justify-between items-center gap-2">
+            <header className="flex justify-between flex-wrap mt-2 md:mt-0 items-center gap-2">
                 <div className="space-y-1">
                     <h1 className="font-bold text-2xl">My Products</h1>
                     <p className="text-gray-500 text-sm">Here's a list of your products</p>

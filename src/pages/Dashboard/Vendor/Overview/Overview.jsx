@@ -126,7 +126,7 @@ const Overview = () => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <div className="flex gap-5 mt-10 md:mt-0 flex-wrap justify-center items-center">
+            <div className="flex gap-5 mt-2 md:mt-0  flex-wrap justify-center items-center">
                 <div className=" space-y-2">
                     <h1 className="text-3xl font-bold">Welcome, {name}!</h1>
                     <p className="text-md">Here's your dashboard overview</p>

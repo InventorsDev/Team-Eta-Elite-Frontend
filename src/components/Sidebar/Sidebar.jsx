@@ -4,21 +4,21 @@ import { Link, useLocation } from "react-router-dom";
 import InlineSpinner from "../InlineSpinner/InlineSpinner";
 import Toast from "../Toast/Toast";
 
-const Sidebar = ({ forVendor }) => {
+const Sidebar = ({ forVendor, isOpen, onClose }) => {
     const [toast, setToast] = useState(null);
     const { logout, logoutState } = useAuth();
     const location = useLocation();
     const pathname = location.pathname;
 
-    const [isOpen, setIsOpen] = useState(false); 
+    const [internalOpen, setInternalOpen] = useState(false); 
 
     // Ensure sidebar is open on desktop by default
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth >= 768) {
-                setIsOpen(true);
+                setInternalOpen(true);
             } else {
-                setIsOpen(false);
+                setInternalOpen(false);
             }
         };
         handleResize();
@@ -44,26 +44,7 @@ const Sidebar = ({ forVendor }) => {
     return (
         <div>
             {/* Hamburger Button (only mobile) */}
-            <button
-                className="absolute cursor-pointer hover:scale-105 transition-all top-2 left-4 z-50 text-center justify-center flex md:hidden"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                {isOpen ? (
-                    // Close (X) SVG
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" 
-                        viewBox="0 0 24 24" strokeWidth={1.7} stroke="#F9FAFB" className="size-11">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-
-                ) : (
-                    // Hamburger SVG
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" 
-                        viewBox="0 0 24 24" strokeWidth={1.7} stroke="#4B5563" className=" size-11">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                )}
-            </button>
-
+        
             {/* Sidebar */}
             <nav
                 id='Sidebar'
@@ -83,10 +64,24 @@ const Sidebar = ({ forVendor }) => {
                     />
                 )}
 
-                {/* Header */}
-                <h1 className="font-headings text-xl sm:text-2xl md:text-3xl font-extrabold text-center">
-                    SAFELINK
-                </h1>
+                {/* close bar and safelink logo */}
+                <div className="flex gap-3 items-center justify-center ">
+                    <button
+                        className="cursor-pointer md:hidden hover:scale-110 hover:shadow hover:bg-gray-50/20 transition-all z-50 text-center justify-center flex rounded-lg "
+                        onClick={onClose}
+                        aria-label="Close menu"
+
+                    >
+                        {/* // Close (X) SVG */}
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" 
+                            viewBox="0 0 24 24" strokeWidth={1.7} stroke="#afafafff" className="size-9">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <h1 className="font-headings text-xl sm:text-2xl md:text-3xl font-extrabold text-center">
+                        SAFELINK
+                    </h1>
+                </div>
 
 
                 {/* Links */}

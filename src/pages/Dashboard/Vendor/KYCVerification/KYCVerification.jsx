@@ -54,7 +54,7 @@ const KYCVerification = () => {
   };
 
   return (
-    <div className="p-2 mt-10 md:mt-0">
+    <div className="mt-2 md:mt-0">
       {toast && (
         <Toast 
           type={toast.type}
