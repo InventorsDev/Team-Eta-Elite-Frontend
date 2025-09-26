@@ -13,17 +13,49 @@ import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
 const Orders = () => {
     const [ordersList, setOrdersList] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingDeliveryCode, setLoadingDeliveryCode] = useState(false);
     const [toast, setToast] = useState(null);
     const [showDeliveryConfirmationModal, setShowDeliveryConfirmationModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState({
         product_name: "",
         id: ""
     });
+    const [deliveryCode, setDeliveryCode] = useState("");
     const isWide = useWindowSize();
 
     useEffect(() => {
         fetchOrders();
     }, []);
+
+    useEffect(() => {
+        console.log(selectedOrder.id);
+
+        // Fetch delivery code from "order_codes" table
+        setLoadingDeliveryCode(true);
+        const fetchDeliveryCode = async () => {
+            const { data, error } = await supabase
+                .from("order_codes")
+                .select("raw_code")
+                .eq("order_id", selectedOrder.id)
+                .single();
+            if (error) {
+                setToast({
+                    type: "error",
+                    message: error.message || "Failed to Fetch Delivery Code"
+                });
+                setLoadingDeliveryCode(false);
+                throw new Error(error);
+            } else {   
+                setDeliveryCode(data.raw_code);
+                setLoadingDeliveryCode(false);
+            }
+        }
+
+        if (selectedOrder.id) {
+            fetchDeliveryCode();
+        }
+        
+    }, [selectedOrder.id])
     
     const fetchOrders = async () => {
         setLoading(true);
@@ -80,7 +112,20 @@ const Orders = () => {
                         Confirm product delivery of <b className="font-extrabold">{selectedOrder.product_name}</b>
                     </h1>
                     <h1 className="text-8xl text-neutral-700 tracking-widest font-bold">
-                        3347
+                        {/* show 4 digit placeholder skeletons with pulse animation while loading delivery code */}
+                        {loadingDeliveryCode ? (
+                            <div className="flex gap-4">
+                                {[...Array(4).keys()].map(index => (
+                                    <div 
+                                        key={index} 
+                                        className="w-16 h-24 bg-gray-300 rounded-lg animate-pulse"
+                                    ></div>
+                                ))}
+                            </div>
+                        ) : (
+                            // show actual delivery code
+                            deliveryCode 
+                        )}
                     </h1>
                     <p className="flex gap-2 text-sm text-yellow-600 font-semibold">
                         {/* caution icon */}
