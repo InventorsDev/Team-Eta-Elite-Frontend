@@ -234,12 +234,16 @@ const Orders = () => {
                                 <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">None</span>
                             )}
                         </td>
-                        <td className="p-4 flex gap-2 flex-col">
+                        <td className="p-4 flex gap-2 justify-center flex-col">
                             <Button 
                                 onClick={() => handleShowConfirmDeliveryModal(order)}
-                                className="px-2 py-2 cursor-pointer border rounded hover:bg-gray-700 hover:text-white ease-transition"
+                                disabled={order.delivery_status === "delivered"}
+                                className="
+                                    px-2 py-2 cursor-pointer self-center border rounded hover:bg-gray-700 hover:text-white ease-transition disabled:opacity-50 
+                                    disabled:cursor-not-allowed
+                                "
                             >
-                                {isWide? "Confirm Delivery": "Confirm"}
+                                {order.delivery_status === "delivered" ? "Delivered!": (isWide? " Delivery": "Confirm")}
                             </Button>
                         </td>
                     </tr> 

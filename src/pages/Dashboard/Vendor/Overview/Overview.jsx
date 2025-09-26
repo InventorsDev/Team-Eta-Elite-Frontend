@@ -59,6 +59,46 @@ const Overview = () => {
             });
         }
 
+        // Fetch sum of "amount_paid" in "orders" table with the vendor_id
+        try {
+            const { data, error } = await supabase
+                .from('orders')
+                .select('amount_paid')
+                .eq("vendor_id", vendorId);
+            
+            console.log(data, error);
+
+            if (!error && data) {
+                console.log(data);
+                const total = data.reduce((acc, curr) => acc + Number(curr.amount_paid), 0);
+                setOverviewData(prev => ({...prev, totalEarned: total}));
+            }
+        } catch (error) {
+            setToast({
+                type: "error",
+                message: "Failed to fetch total earned."
+            });
+        }
+
+        // Fetch sum of "amount_paid" in "orders" table with the vendor_id and escrow_status = 'held'
+        try {
+            const { data, error } = await supabase
+                .from('orders')
+                .select('amount_paid')
+                .eq("vendor_id", vendorId)
+                .eq("escrow_status", "held");
+            
+                if (!error && data) {
+                const total = data.reduce((acc, curr) => acc + Number(curr.amount_paid), 0);
+                setOverviewData(prev => ({...prev, escrowBalance: total}));
+            }
+        } catch (error) {
+            setToast({
+                type: "error",
+                message: "Failed to fetch escrow balance."
+            });
+        }
+
         setLoading(false);
     }
 
@@ -134,17 +174,17 @@ const Overview = () => {
                 <div className="ml-auto md:text-wrap text-nowrap justify-center items-center flex mt-4 md:mt-0  ">
                     <Link
                         to="../create"
-                        className="bg-[var(--primary-color)] transition-colors duration-300 px-8 font-medium py-3 rounded-md flex justify-center text-gray-100 items-center"
+                        className="bg-[var(--primary-color)] transition-colors duration-300 px-4 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
                     >
                         <div className="flex items-center gap-2 ">
                             <span className="text-2xl">+</span>
-                            <span>Add New Product</span>
+                            <span> Product</span>
                         </div>
                     </Link>
                 </div>
             </div>
             {/* cards */}
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 {salesDiv.map((item, index) => (
                     <div key={index} className="bg-white border-2 border-gray-400/10 p-6 rounded-lg shadow-md flex items-center">
                         <div
@@ -154,8 +194,8 @@ const Overview = () => {
                             {item.icon}
                         </div>
                         <div className="ml-4 space-y-2">
-                            <h3 className="text-lg font-medium">{item.Title || "N/A"}</h3>
-                            <p className="text-xl sm:text-2xl font-bold">
+                            <h3 className="font-semibold">{item.Title || "N/A"}</h3>
+                            <p className="sm:text-lg md:text-xl font-bold">
                                 {loading ? (
                                     <InlineSpinner />
                                 ) : (

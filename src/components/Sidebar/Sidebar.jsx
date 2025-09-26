@@ -26,7 +26,7 @@ const Sidebar = ({ forVendor }) => {
             icon: "/icons/sidebar/orders.svg"
         },
         {
-            name: "Create Product",
+            name: "Add Product",
             path: `/dashboard/vendor/create`,
             icon: "/icons/sidebar/product.svg"
         },
