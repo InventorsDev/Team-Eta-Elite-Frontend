@@ -4,15 +4,21 @@ import { formatToNaira } from "../../utils/helpers/formatToNaira";
 import { supabase } from "../../lib/supabase";
 import { useWindowSize } from "../../utils/hooks/useWindowSize";
 import { useAuth } from "../../utils/hooks/useAuth";
+import { Player } from "@lottiefiles/react-lottie-player";
+import { PaystackButton } from "react-paystack";
 import Button from "../Button/Button";
 import InlineSpinner from "../InlineSpinner/InlineSpinner";
 import Toast from "../Toast/Toast";
-import { PaystackButton } from "react-paystack";
+import Modal from "../Modal/Modal";
+import { corsHeaders } from "../../utils/cors";
 
-const ProductsDetails = ({ productId, vendorName }) => {
+const ProductsDetails = ({ productId, vendorName, vendorId }) => {
     const [loading, setLoading] = useState(false);
     const [productDetails, setProductDetails] = useState(null)
     const [toast, setToast] = useState(null);
+    const [showOrderCreationModal, setShowOrderCreationModal] = useState(false);
+    const [orderCreationLoading, setOrderCreationLoading] = useState(false);
+    const [orderSuccess, setOrderSuccess] = useState({ state: false, message: "" });
     const { isAuthenticated, sessionUserData } = useAuth();
     const isWide = useWindowSize();
     const navigate = useNavigate();
@@ -90,18 +96,20 @@ const ProductsDetails = ({ productId, vendorName }) => {
             return;
         }
 
-        // Fix redirect for buyer
-
-        // show alert 7 days delivery days by default
+        // Prevent vendors from purchasing with the Vendor account
+        if (sessionUserData.sub === vendorId || sessionUserData.role === "vendor") {
+            setToast({ 
+                type: "error",
+                message: "Purchases are not allowed for vendor accounts"
+            });
+            return;
+        }
 
         // make sure users have put in their bank details on the dashboard (there should be a refund button on buyer's dashbaord)
-
-        // implement logic to prevent vendors from purchasing... (for now - later, we can work on switching roles)
 
         // click actual paystack payment button
         const paystackButton = document.querySelector(".paystack-button");
         paystackButton.click();
-        console.log("Item Purchased!");
     }
 
     const handlePaystackPaymentSuccess = async (referenceObject) => {
@@ -110,10 +118,15 @@ const ProductsDetails = ({ productId, vendorName }) => {
             message: "Payment successful with reference " + referenceObject.reference
         });
 
-        // Generate code for this buyer's order
-
-        // add records to supabase table 
-
+        setShowOrderCreationModal(true);
+        createOrder(
+            referenceObject.reference, 
+            sessionUserData.sub, 
+            vendorId, 
+            sessionUserData.email, 
+            productId, 
+            productDetails.price
+        );
     }
 
     const handlePaystackPaymentFailure = () => {
@@ -123,6 +136,54 @@ const ProductsDetails = ({ productId, vendorName }) => {
         });
     };
 
+    async function createOrder(transaction_reference, buyer_id, vendor_id, buyer_email, product_id, amount) {
+        const orderData = { 
+            transaction_reference: transaction_reference, 
+            vendor_name: vendorName,
+            product_name: productDetails?.name,
+            buyer_id: buyer_id, 
+            vendor_id: vendor_id, 
+            buyer_email: buyer_email, 
+            product_id: product_id, 
+            amount: amount 
+        }
+        setOrderCreationLoading(true);
+
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+
+        try {
+            const res = await fetch(
+                `/api/create-order`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        ...corsHeaders
+                    },
+                    body: JSON.stringify(orderData),
+                }
+            );
+    
+            if (!res.ok) {
+                console.error(res);
+                setOrderSuccess({ state: false, message: "Failed to Create Order" });
+                throw new Error("Failed to create order");
+            }
+    
+            const data = res.json();
+            console.log(data);
+            
+            setOrderSuccess({ state: true, message: `Congratulations, your order was placed successfully! 🥳` })
+        } catch (error) {
+            console.error(error);
+            setOrderSuccess({ state: false, message: "Failed to Create Order" });
+        } finally {
+            setOrderCreationLoading(false);
+        }
+    }
+
     return (
         <div id="product-details-modal" className="h-screen w-full z-50 fixed top-0 left-0">
             {toast && (
@@ -131,6 +192,57 @@ const ProductsDetails = ({ productId, vendorName }) => {
                     message={toast.message}
                     onClose={() => setToast(null)}
                 />
+            )}
+
+            {showOrderCreationModal && (
+                <Modal type={"blur"}>
+                    {/* Loading Modal UI */}
+                    {orderCreationLoading && (
+                        <div id="loading-ui" className="flex flex-col gap-6 items-center">
+                            <InlineSpinner size="lg" />
+                            <h1 className="font-bold text-xl ">Please Wait, Your Order is Being Created</h1>
+                            <p className="text-red-500 text-xs flex gap-2 items-center font-semibold sm:text-sm">
+                                {/* caution icon */}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                    <path 
+                                        strokeLinecap="round" strokeLinejoin="round" 
+                                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" 
+                                    />
+                                </svg>
+                                Do not interrupt this process.
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Success modal UI */}
+                    {orderSuccess.state && !orderCreationLoading && (
+                        <div className="space-y-6">
+                            <Player
+                                autoplay
+                                loop={true}
+                                src={"/lotties/order-animation.json"}
+                                style={{ height: '150px', width: '150px', scale: "130%" }}
+                            />
+                            <h1 className="text-lg sm:text-3xl font-bold font-headings">
+                                Congratulations, your order was placed successfully! 🥳
+                            </h1>
+                            <p className="text-sm sm:text-base">Your delivery code is on your dashboard</p>
+                            <Button type="bg-black" onClick={() => navigate("/dashboard")}>
+                                Go to Dashboard
+                            </Button>
+                        </div>
+                    )}
+
+                    {/* Error modal UI */}
+                    {!orderSuccess.state && !orderCreationLoading && (
+                        <div className="space-y-4">
+                            <h1 className="text-red-500 font-bold text-xl">
+                                {orderSuccess.message === ""? "Oops, Failed to Place Order": orderSuccess.message}
+                            </h1>
+                            <p className="text-sm">Please reach out to <b>omoniyiopemipo6@gmail.com</b></p>
+                        </div>
+                    )}
+                </Modal>
             )}
 
             <div 

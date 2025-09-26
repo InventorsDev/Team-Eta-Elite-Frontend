@@ -106,7 +106,7 @@ const VendorListing = () => {
             )}
 
             {showProductDetails && (
-                <ProductsDetails productId={productId} vendorName={`${displayName}'s Store`} />
+                <ProductsDetails productId={productId} vendorName={`${displayName}'s Store`} vendorId={userId} />
             )}
 
             <header className="w-full flex gap-4 sm:gap-8 items-center">
