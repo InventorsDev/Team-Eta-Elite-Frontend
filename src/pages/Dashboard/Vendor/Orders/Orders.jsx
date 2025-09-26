@@ -82,7 +82,8 @@ const Orders = () => {
         setLoadingCodeSubmission(true);
         const finalCode = code.join("");
         console.log("Submitted code:", finalCode);
-        setTimeout(() => setLoadingCodeSubmission(false), 2000);
+
+        handleDeliveryConfirmation(selectedOrder.id, finalCode);
     };
 
     const handleShowConfirmDeliveryModal = (order) => {
@@ -96,6 +97,34 @@ const Orders = () => {
             }
         }, 200);
     }
+
+    const handleDeliveryConfirmation = async (order_id, inputCode) => {
+        setLoadingCodeSubmission(true);
+        try {
+            const response = await fetch("/api/confirm-delivery", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ order_id, inputCode })
+            });
+            
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to confirm delivery");
+            }
+            setToast({ type: "success", message: "Delivery confirmed successfully! You would receive your funds on the next work day." });
+            // refresh orders list
+            fetchOrders();
+            setShowDeliveryConfirmationModal(false);
+        } catch (error) {
+            setToast({ type: "error", message: error.message || "Failed to confirm delivery" });
+        } finally {
+            setLoadingCodeSubmission(false);
+            setCode(["", "", "", ""]);
+        }
+    } 
 
     return (
         <div className="w-full space-y-6">
@@ -114,7 +143,7 @@ const Orders = () => {
                         ordered by <b className="font-extrabold"> {selectedOrder.buyer_email}</b>
                     </h1>
                     <p className="text-sm">
-                        Get code from your customer and confirm before handing goods out.
+                        Get code from your customer and confirm your delivery.
                     </p>
                     <div className="mt-4 flex flex-col gap-4">
                         <div className="flex justify-center gap-2">
@@ -177,7 +206,7 @@ const Orders = () => {
                 /> 
             )}
 
-            <Table headers={["Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Disputed?", "Actions"]}>
+            <Table headers={["Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Dispute?", "Actions"]}>
                 {ordersList.length > 0 && !loading && ordersList.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
                         <td className="p-4">{formatDateTime(order.created_at).date}</td>
@@ -195,7 +224,7 @@ const Orders = () => {
                             {order.escrow_status === "held" ? (
                                 <span className="text-yellow-500 p-2 rounded-xl bg-yellow-100 text-sm">Held</span>
                             ) : (
-                                <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Delivered</span>
+                                <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Released</span>
                             )}
                         </td>
                         <td className="p-4">
