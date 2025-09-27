@@ -19,7 +19,7 @@ const VendorDashboardLayout = () => {
 const VendorDashboard = () => {
     return (
         <Routes>
-            <Route path='/' element={<VendorDashboardLayout />}>
+            <Route path='' element={<VendorDashboardLayout />}>
                 <Route index element={<Overview />} />
                 <Route path='products' element={<Products />} />
                 <Route path='orders' element={<Orders />} />

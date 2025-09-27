@@ -5,6 +5,7 @@ import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
 import Toast from "../../../../components/Toast/Toast";
 import { supabase } from "../../../../lib/supabase";
 import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
+import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
 
 const Overview = () => {
     const { sessionUserData } = useAuth();
@@ -16,6 +17,7 @@ const Overview = () => {
     });
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
+    const isWide = useWindowSize();
     const name =  sessionUserData.display_name;
 
     useEffect(() => {
@@ -66,10 +68,7 @@ const Overview = () => {
                 .select('amount_paid')
                 .eq("vendor_id", vendorId);
             
-            console.log(data, error);
-
             if (!error && data) {
-                console.log(data);
                 const total = data.reduce((acc, curr) => acc + Number(curr.amount_paid), 0);
                 setOverviewData(prev => ({...prev, totalEarned: total}));
             }
@@ -117,6 +116,15 @@ const Overview = () => {
         }
     }
 
+    const handleCopyVendorLink = () => {
+        const vendorLink = `${window.location.origin}/vendors/${sessionUserData.slug}`;
+        navigator.clipboard.writeText(vendorLink);
+        setToast({ 
+            type: "success",
+            message: "Vendor link copied to clipboard!"
+        });
+    }
+
     const salesDiv =[
         {
             Title:"Products",
@@ -148,7 +156,7 @@ const Overview = () => {
         },
         {
             Title:"Escrow Balance",
-            amount: 425000,
+            amount: 0,
             icon: (<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="text-[#3C173E] size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a2.25 2.25 0 0 0-2.25-2.25H15a3 3 0 1 1-6 0H5.25A2.25 2.25 0 0 0 3 12m18 0v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 9m18 0V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v3" />
                 </svg>
@@ -168,7 +176,7 @@ const Overview = () => {
             )}
             <div className=" md:flex justify-center items-center">
                 <div className="space-y-2">
-                    <h1 className="text-3xl font-bold">Welcome, {name}!</h1>
+                    <h1 className="text-3xl text-[var(--primary-color)] font-bold">Welcome, {name}!</h1>
                     <p className="text-md">Here's your dashboard overview</p>
                 </div>
                 <div className="ml-auto md:text-wrap text-nowrap justify-center items-center flex mt-4 md:mt-0  ">
@@ -207,9 +215,47 @@ const Overview = () => {
                 ))}
             </div>
 
-            <div className="flex mt-15 shadow-md p-10 border-2 rounded-md border-gray-400/10 flex-col">
-                <div><h2 className="font-bold text-2xl">KYC Status</h2></div>
-                <div className="mt-5 flex items-center gap-5 ">
+            <div className="flex flex-col lg:flex-row justify-between gap-4">
+                <div className="flex mt-5 sm:mt-15 shadow-md p-4 sm:p-10 border-2 rounded-md border-gray-400/10 flex-col">
+                    <h2 className="font-bold sm:text-xl">Public Checkout Link</h2>
+                    <div className="mt-5 flex items-center gap-5 ">
+                        <p className="text-sm sm:text-base">Here's your public product listing - click the copy icon and share link with customers.</p>
+                        <div 
+                            className="hover:cursor-pointer p-4 hover:rounded-full hover:bg-neutral-200 hover:text-gray-600 ease-transition"
+                            onClick={handleCopyVendorLink}
+                        >
+                            {toast && toast.message === "Vendor link copied to clipboard!" ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                            ): (
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 font-bold"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                </svg>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex mt-5 sm:mt-15 shadow-md p-4 sm:p-10 border-2 rounded-md border-gray-400/10 flex-col">
+                    <h2 className="font-bold sm:text-xl">Edit Profile Details</h2>
+                    <div className="mt-5 text-sm sm:text-base flex items-center gap-5 ">
+                        <p>Click the button to update your profile details like description and so on.</p>
+                        <Link
+                            to="../settings"
+                            className="bg-[var(--primary-color)] transition-colors duration-300 px-4 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
+                        >
+                            <span>{isWide? "Edit Profile": "Edit"}</span>
+                        </Link>
+                    </div>     
+                </div>
+            </div>      
+               
+            <div className="flex mt-5 shadow-md p-4 sm:p-10 border-2 rounded-md border-gray-400/10 flex-col">
+                <div><h2 className="font-bold sm:text-xl">KYC Status</h2></div>
+                <div className="mt-5 text-sm sm:text-base flex items-center gap-5 ">
                     <div className="p-3 bg-[#2FA21133] text-[#2FA211] rounded-[50%]">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />

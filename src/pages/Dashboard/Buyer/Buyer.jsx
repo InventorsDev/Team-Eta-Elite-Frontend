@@ -16,7 +16,7 @@ const BuyerDashboardLayout = () => {
 const BuyerDashboard = () => {
     return (
         <Routes>
-            <Route path='/' element={<BuyerDashboardLayout />}>
+            <Route path='' element={<BuyerDashboardLayout />}>
                 <Route index element={<Navigate replace to="orders" />} />
                 <Route path='orders' element={<Orders />} />
                 <Route path='saved_suppliers' element={<SavedVendors />} />

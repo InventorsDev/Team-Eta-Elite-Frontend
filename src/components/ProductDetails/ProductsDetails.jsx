@@ -293,7 +293,7 @@ const ProductsDetails = ({ productId, vendorName, vendorId }) => {
                         </div>
 
                         <div id="product-details" className="p-4 xl:py-0 space-y-6 lg:space-y-8 xl:p-8">
-                            <h1 className="leading-[40px] text-4xl text-gray-900 font-extrabold">{productDetails?.name}</h1>
+                            <h1 className="leading-[40px] text-2xl sm:text-4xl text-gray-900 font-extrabold">{productDetails?.name}</h1>
                             <p id="product-description" className="leading-loose text-justify sm:leading-[38px] font-headings">{productDetails?.description}</p>
                             <p><b>Vendor Name:</b>  {vendorName}</p>
                             <p><b>Expected delivery:</b>  5 - 7 days</p>

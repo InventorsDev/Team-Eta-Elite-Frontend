@@ -14,7 +14,8 @@ export function useAuth() {
         email_verified: false,
         phone_verified: false,
         role: "",
-        sub: ""
+        sub: "",
+        slug: ""
     });
     const [logoutState, setLogoutState] = useState({
         loading: false,

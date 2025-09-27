@@ -10,6 +10,7 @@ import EmptyListUI from "../../components/EmptyListUI/EmptyListUI";
 import Skeleton from "../../components/Skeleton/Skeleton";
 import ProductsDetails from "../../components/ProductDetails/ProductsDetails";
 import VendorFooter from "../../components/Footer/VendorFooter";
+import { useAuth } from "../../utils/hooks/useAuth";
 
 const VendorListing = () => {
     const [searchParams, _] = useSearchParams();
@@ -17,11 +18,14 @@ const VendorListing = () => {
     const { slug } = useParams();
     const [productsList, setProductsList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingSaveVendor, setLoadingSaveVendor] = useState(false);
     const [userId, setUserId] = useState(null);
     const [displayName, setDisplayName] = useState("");
     const [toast, setToast] = useState(null);
     const [showProductDetails, setShowProductDetails] = useState(false);
     const isWide = useWindowSize();
+    const { sessionUserData, isAuthenticated } = useAuth();
+    const [description, setDescription] = useState("Affordable and high quality products for your needs");
 
     useEffect(() => {
         if (!slug) return;
@@ -95,6 +99,67 @@ const VendorListing = () => {
         setTimeout(() =>  setLoading(false), 1000);
     }
 
+    const handleSaveVendor = async () => {
+        if (!userId) {
+            setToast({
+                type: "error",
+                message: "Can't save Invalid vendor"
+            });
+            return;
+        }
+
+        if (!isAuthenticated) {
+            setToast({
+                type: "error",
+                message: "Please login to save vendor"
+            });
+
+            // redirect to login page after 2 seconds
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2000);
+            return;
+        }
+
+        setLoadingSaveVendor(true);
+
+        try {
+            const { error } = await supabase
+                .from('saved_vendors')
+                .insert([{ vendor_id: userId, vendor_name: displayName, buyer_id: sessionUserData.sub, slug: slug, description: description}]);
+
+            if (error) {
+                if (error.code === "23505") {
+                    setToast({
+                        type: "error",
+                        message: "Vendor already saved"
+                    });
+                    setLoadingSaveVendor(false);
+                    return;
+                }
+
+                setToast({
+                    type: "error",
+                    message: error.message || "Failed to Save Vendor"
+                });
+                throw new Error(error);
+            } else {
+                setToast({
+                    type: "success",
+                    message: "Vendor saved successfully."
+                });
+            }            
+        } catch (error) {
+            console.error("Error saving vendor:", error);
+            setToast({
+                type: "error",
+                message: "An unexpected error occurred while saving the vendor."
+            });
+        } finally {
+            setLoadingSaveVendor(false);
+        }
+    }
+
     return (
         <div className="bg-gray-100 p-6 space-y-6 sm:space-y-8 sm:p-10 sm:px-16 lg:space-y-12 lg:px-28">
             {toast && (
@@ -118,9 +183,9 @@ const VendorListing = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <Button type="bg-black" className="flex items-center gap-2 max-w-fit md:max-w-full py-2">
+                <Button onClick={handleSaveVendor} disabled={loadingSaveVendor} type="bg-black" className="flex items-center gap-2 max-w-fit md:max-w-full py-2">
                     <img src="/icons/sidebar/saved_vendors.svg" alt="Save Vendor" className="w-5 h-5" />
-                    {isWide && "Save"}
+                    {loadingSaveVendor && isWide? "Saving...": (isWide && "Save")}
                 </Button>
                 <Link to={"/dashboard/"} className="px-3 py-2 border-2 border-gray-400 text-gray-600 rounded-lg flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
@@ -137,7 +202,7 @@ const VendorListing = () => {
                         {loading? <div className="w-[280px] sm:w-[380px]"><Skeleton /></div>: `${displayName !== ""? displayName: "Safelink"}'s Store`}
                     </h1>
                     <div role="paragraph">
-                        {loading? <div className="w-[200px] sm:w-[300px]"><Skeleton /></div>: `Affordable and high quality products for your needs`}
+                        {loading? <div className="w-[200px] sm:w-[300px]"><Skeleton /></div>: description}
                     </div>
                     <div id="follow-and-chat" className="flex gap-2">
                         <Button type="bg-black" className="py-2 rounded-lg">Review</Button>

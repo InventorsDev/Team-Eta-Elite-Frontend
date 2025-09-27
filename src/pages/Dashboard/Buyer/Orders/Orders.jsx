@@ -173,9 +173,11 @@ const Orders = () => {
                         <td className="p-4 flex gap-2 flex-col">
                             <Button 
                                 onClick={() => handleShowConfirmDeliveryModal(order)}
-                                className="px-2 py-2 cursor-pointer border rounded hover:bg-gray-700 hover:text-white ease-transition"
+                                className="px-2 py-2 cursor-pointer border rounded hover:bg-gray-700 hover:text-white ease-transition
+                                disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={order.delivery_status === "delivered"}
                             >
-                                {isWide? "Confirm Delivery": "Confirm"}
+                                {order.delivery_status === "delivered" ? "Delivery Confirmed!":(isWide? "Confirm Delivery": "Confirm")}
                             </Button>
                         </td>
                     </tr> 
