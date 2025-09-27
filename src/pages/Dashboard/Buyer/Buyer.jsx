@@ -53,16 +53,16 @@ const BuyerDashboardLayout = () => {
 };
 
 const BuyerDashboard = () => {
-  return (
-    <Routes>
-      <Route path='/' element={<BuyerDashboardLayout />}>
-        <Route index element={<Navigate replace to="orders" />} />
-        <Route path='orders' element={<Orders />} />
-        <Route path='saved_suppliers' element={<SavedVendors />} />
-        <Route path='settings' element={<Settings />} />
-      </Route>
-    </Routes>
-  );
-};
+    return (
+        <Routes>
+            <Route path='' element={<BuyerDashboardLayout />}>
+                <Route index element={<Navigate replace to="orders" />} />
+                <Route path='orders' element={<Orders />} />
+                <Route path='saved_suppliers' element={<SavedVendors />} />
+                <Route path='settings' element={<Settings />} />
+            </Route>
+        </Routes>
+    );
+}
 
 export default BuyerDashboard;

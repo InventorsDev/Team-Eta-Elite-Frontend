@@ -175,7 +175,7 @@ const CreateProduct = () => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <h1 className="text-2xl font-extrabold ">  Create Product</h1>
+            <h1 className="text-2xl font-extrabold ">Add Product</h1>
             
             <p className="text-gray-500 text-sm">Fill out the form below to add a new product</p>
 

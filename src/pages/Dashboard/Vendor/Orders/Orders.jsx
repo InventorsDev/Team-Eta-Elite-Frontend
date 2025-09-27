@@ -8,6 +8,7 @@ import Button from "../../../../components/Button/Button";
 import Modal from "../../../../components/Modal/Modal";
 import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
 import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
+import { formatDateTime } from "../../../../utils/helpers/formatDateTime";
 import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
 
 const Orders = () => {
@@ -16,8 +17,9 @@ const Orders = () => {
     const [toast, setToast] = useState(null);
     const [showDeliveryConfirmationModal, setShowDeliveryConfirmationModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState({
+        id: "",
         product_name: "",
-        id: ""
+        buyer_email: "",
     });
     const [code, setCode] = useState(["", "", "", ""]);
     const [loadingCodeSubmission, setLoadingCodeSubmission] = useState(false);
@@ -80,7 +82,8 @@ const Orders = () => {
         setLoadingCodeSubmission(true);
         const finalCode = code.join("");
         console.log("Submitted code:", finalCode);
-        setTimeout(() => setLoadingCodeSubmission(false), 2000);
+
+        handleDeliveryConfirmation(selectedOrder.id, finalCode);
     };
 
     const handleShowConfirmDeliveryModal = (order) => {
@@ -95,6 +98,34 @@ const Orders = () => {
         }, 200);
     }
 
+    const handleDeliveryConfirmation = async (order_id, inputCode) => {
+        setLoadingCodeSubmission(true);
+        try {
+            const response = await fetch("/api/confirm-delivery", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ order_id, inputCode })
+            });
+            
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Failed to confirm delivery");
+            }
+            setToast({ type: "success", message: "Delivery confirmed successfully! You would receive your funds on the next work day." });
+            // refresh orders list
+            fetchOrders();
+            setShowDeliveryConfirmationModal(false);
+        } catch (error) {
+            setToast({ type: "error", message: error.message || "Failed to confirm delivery" });
+        } finally {
+            setLoadingCodeSubmission(false);
+            setCode(["", "", "", ""]);
+        }
+    } 
+
     return (
         <div className="w-full space-y-6">
             {toast && (
@@ -108,25 +139,26 @@ const Orders = () => {
             {showDeliveryConfirmationModal && (
                 <Modal type={"blur"}>
                     <h1 className="text-lg font-semibold">
-                        Confirm the delivery code of <b className="font-extrabold">{selectedOrder.product_name}</b>
+                        Confirm the delivery code of <b className="font-extrabold">{selectedOrder.product_name} </b> 
+                        ordered by <b className="font-extrabold"> {selectedOrder.buyer_email}</b>
                     </h1>
                     <p className="text-sm">
-                        Get code from your customer and confirm before handing goods out.
+                        Get code from your customer and confirm your delivery.
                     </p>
                     <div className="mt-4 flex flex-col gap-4">
                         <div className="flex justify-center gap-2">
                             {code.map((digit, index) => (
-                            <input
-                                key={index}
-                                type="text"
-                                inputMode="numeric"
-                                maxLength={1}
-                                value={digit}
-                                onChange={(e) => handleChange(e, index)}
-                                onKeyDown={(e) => handleKeyDown(e, index)}
-                                ref={(el) => (inputRefs.current[index] = el)}
-                                className="w-12 h-12 text-center text-lg border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                            />
+                                <input
+                                    key={index}
+                                    type="text"
+                                    inputMode="numeric"
+                                    maxLength={1}
+                                    value={digit}
+                                    onChange={(e) => handleChange(e, index)}
+                                    onKeyDown={(e) => handleKeyDown(e, index)}
+                                    ref={(el) => (inputRefs.current[index] = el)}
+                                    className="w-12 h-12 text-center text-lg border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                />
                             ))}
                         </div>
 
@@ -174,24 +206,25 @@ const Orders = () => {
                 /> 
             )}
 
-            <Table headers={["Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Disputed?", "Actions"]}>
+            <Table headers={["Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Dispute?", "Actions"]}>
                 {ordersList.length > 0 && !loading && ordersList.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
+                        <td className="p-4">{formatDateTime(order.created_at).date}</td>
                         <td className="p-4">{order.buyer_email}</td>
                         <td className="p-4">{order.product_name}</td>
                         <td className="p-4">{formatToNaira(order.amount_paid)}</td>
                         <td className="p-4">
-                            {order.delivery_status === "paid" ? (
-                                <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Paid</span>
+                            {order.delivery_status === "pending" ? (
+                                <span className="text-yellow-500 p-2 rounded-xl bg-yellow-100 text-sm">Pending</span>
                             ) : (
-                                <span className="text-blue-500 p-2 rounded-xl bg-blue-100 text-sm">Delivered</span>
+                                <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Delivered</span>
                             )}
                         </td>
                         <td className="p-4">
                             {order.escrow_status === "held" ? (
                                 <span className="text-yellow-500 p-2 rounded-xl bg-yellow-100 text-sm">Held</span>
                             ) : (
-                                <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Delivered</span>
+                                <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Released</span>
                             )}
                         </td>
                         <td className="p-4">
@@ -201,12 +234,16 @@ const Orders = () => {
                                 <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">None</span>
                             )}
                         </td>
-                        <td className="p-4 flex gap-2 flex-col">
+                        <td className="p-4 flex gap-2 justify-center flex-col">
                             <Button 
                                 onClick={() => handleShowConfirmDeliveryModal(order)}
-                                className="px-2 py-2 cursor-pointer border rounded hover:bg-gray-700 hover:text-white ease-transition"
+                                disabled={order.delivery_status === "delivered"}
+                                className="
+                                    px-2 py-2 cursor-pointer self-center border rounded hover:bg-gray-700 hover:text-white ease-transition disabled:opacity-50 
+                                    disabled:cursor-not-allowed
+                                "
                             >
-                                {isWide? "Confirm Delivery": "Confirm"}
+                                {order.delivery_status === "delivered" ? "Delivered!": (isWide? " Delivery": "Confirm")}
                             </Button>
                         </td>
                     </tr> 

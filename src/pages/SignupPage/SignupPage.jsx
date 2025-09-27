@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { isValidEmail } from "../../utils/helpers/isEmailValid";
 import { supabase } from "../../lib/supabase";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -18,6 +18,8 @@ const SignupPage = () => {
     const [loading, setLoading] = useState(false);
     const [isSuccessful, setIsSuccessful] = useState(false);
     const [toast, setToast] = useState(null);
+    const [searchParams, _] = useSearchParams();
+    const redirect_path = searchParams.get("redirect_to");
     const navigate = useNavigate();
 
     const nameRef = useRef(null);
@@ -131,7 +133,9 @@ const SignupPage = () => {
                         Confirmation Email Sent to <b className="font-extrabold">{emailRef.current.value || ""}</b>! 🎉
                     </h1>
                     <p className="text-sm sm:text-base">Kindly click the link in the mail to verify your email.</p>
-                    <Button type="bg-black" onClick={() => navigate("/login")}>Done? Login</Button>
+                    <Button type="bg-black" onClick={() => navigate(redirect_path ? `/login?redirect_to=${redirect_path}` : "/login")}>
+                        Done? Login
+                    </Button>
                 </Modal>
             )}
 
@@ -144,7 +148,7 @@ const SignupPage = () => {
                 <h1 className='text-4xl font-extrabold lg:text-5xl'>Hello There!</h1>
                 <p className='text-sm lg:text-base'>Enter your details to sign up for secure transactions with vendors using SAFELINK</p>
                 <Link 
-                    to={"/login"} 
+                    to={redirect_path ? `/login?redirect_to=${redirect_path}` : "/login"} 
                     className="rounded-3xl border border-white text-white p-2 px-4 cursor-pointer w-fit self-center text-sm mt-4 lg:text-lg lg:px-8"
                 >
                     SIGN IN

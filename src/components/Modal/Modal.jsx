@@ -6,7 +6,7 @@ const Modal = (props) => {
             ${type === "blur"? "backdrop-blur-md": "backdrop-brightness-[.2]"}
         `}>
             <div id="ModalContent" {...rest} className={`
-                ${className} bg-white border border-gray-400 rounded-xl p-6 mx-8 sm:p-12 text-center flex flex-col gap-4 justify-center items-center max-w-[700px]
+                ${className} bg-white border relative border-gray-400 rounded-xl p-6 mx-8 sm:p-12 text-center flex flex-col gap-4 justify-center items-center max-w-[700px]
             `}>
                 {props.children}
             </div>

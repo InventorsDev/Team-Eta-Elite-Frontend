@@ -58,18 +58,18 @@ const VendorDashboardLayout = () => {
 };
 
 const VendorDashboard = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<VendorDashboardLayout />}>
-        <Route index element={<Overview />} />
-        <Route path="products" element={<Products />} />
-        <Route path="orders" element={<Orders />} />
-        <Route path="create" element={<CreateProduct />} />
-        <Route path="kyc" element={<KYCVerification />} />
-        <Route path="settings" element={<Settings />} />
-      </Route>
-    </Routes>
-  );
-};
+    return (
+        <Routes>
+            <Route path='' element={<VendorDashboardLayout />}>
+                <Route index element={<Overview />} />
+                <Route path='products' element={<Products />} />
+                <Route path='orders' element={<Orders />} />
+                <Route path='create' element={<CreateProduct />} />
+                <Route path='kyc' element={<KYCVerification />} />
+                <Route path='settings' element={<Settings />} />
+            </Route>
+        </Routes>
+    );
+}
 
 export default VendorDashboard;

@@ -14,7 +14,8 @@ export function useAuth() {
         email_verified: false,
         phone_verified: false,
         role: "",
-        sub: ""
+        sub: "",
+        slug: ""
     });
     const [logoutState, setLogoutState] = useState({
         loading: false,
@@ -41,7 +42,7 @@ export function useAuth() {
                 // If there's an active session and user is on login page, move user to dashboard
                 if (pathname === "/" || pathname === "/login" || pathname === "/signup") navigate(`/dashboard/${session.user.user_metadata.role}`);
 
-                if (!pathname.includes(session.user.user_metadata.role)) {
+                if (!pathname.includes(session.user.user_metadata.role) && !pathname.startsWith("/vendors")) {
                     navigate(`/dashboard/${session.user.user_metadata.role}`);
                 }
             }

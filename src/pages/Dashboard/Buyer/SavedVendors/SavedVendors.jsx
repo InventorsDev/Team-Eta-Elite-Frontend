@@ -1,8 +1,15 @@
+import { useState, useEffect, use } from "react";
 import starRating from "../../../../components/Star/starRating";
 import { Link } from "react-router-dom";
 import EmptyListUI from "../../../../components/EmptyListUI/EmptyListUI";
+import Toast from "../../../../components/Toast/Toast";
+import { supabase } from "../../../../lib/supabase";
 
 const SavedVendors = () => {
+    const [savedVendorsList, setSavedVendorsList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState(null);
+
     const savedVendors = [
         {
             id: 1,
@@ -48,16 +55,80 @@ const SavedVendors = () => {
         },
     ];
 
+    useEffect(() => {
+        fetchedSavedVendors();
+    }, []);
+
+    const fetchedSavedVendors = async () => {
+        const { data: claims } = await supabase.auth.getClaims();
+        const buyerId = claims.claims.sub;
+
+        try {
+            const { data, error } = await supabase
+                .from('saved_vendors')
+                .select('*')
+                .eq('buyer_id', buyerId);
+
+            if (error) {
+                setToast({
+                    type: "error",
+                    message: error.message || "Failed to fetch saved vendors"
+                });
+                console.log("Error fetching saved vendors:", error);
+                throw new Error(error);
+            }
+
+            if (data) {
+                setSavedVendorsList(data);
+                setToast({ 
+                    type: "success",
+                    message: "Saved vendors fetched successfully"
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching saved vendors:", error);
+            setToast({
+                type: "error",
+                message: error.message || "An unexpected error occurred"
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div>
+            {toast && (
+                <Toast 
+                    type={toast?.type}
+                    message={toast?.message}
+                    onClose={() => setToast(null)}
+                />
+            )}
+
             <div className="mt-2 md:mt-0">
                 <h1 className="text-2xl font-bold">Saved Vendors</h1>
             </div>
-            {savedVendors.length > 0 ? (
-                <div className="mt-9 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-7">
-                    {savedVendors.map((vendor)=>(
-                        <div key={vendor.id} className="relative border-2 mb-2 border-[#00000003]  p-6 flex flex-col rounded-[10px] shadow-md ">
-                            <h2 className="font-bold text-[20px] ">{vendor.name}</h2>
+            
+            {loading && (
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                    {Array.from({ length: 6 }).map((_, index) => (
+                        <div key={index} className="border-2 border-[#00000003] p-6 flex flex-col rounded-[10px] shadow-md animate-pulse">
+                            <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
+                            <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                            <div className="h-4 bg-gray-300 rounded w-5/6 mb-2"></div>
+                            <div className="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
+                            <div className="h-8 bg-gray-300 rounded w-full mt-auto"></div>
+                        </div>
+                    ))}
+                </div>
+            )}
+            
+            {savedVendorsList.length > 0 && !loading && (
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                    {savedVendorsList.map((vendor) => (
+                        <div key={vendor.vendor_id} className="relative border-2 mb-2 border-[#00000003]  p-6 flex flex-col rounded-[10px] shadow-md ">
+                            <h2 className="font-bold text-[20px] ">{vendor.vendor_name}</h2>
                             <svg xmlns="http://www.w3.org/2000/svg" 
                                 fill="#0000001A" viewBox="0 0 24 24" 
                                 strokeWidth={1.5} 
@@ -73,25 +144,27 @@ const SavedVendors = () => {
                             </svg>
                             <p className="text-neutral-500 my-2 font-normal">{vendor.description}</p>
                             <div className="flex my-5 flex-wrap items-center justify-between">
-                                {starRating({ rating: vendor.rating })}
+                                {starRating({ rating: 0 })}
                                 <span className="text-neutral-500 text-[15px] font-semibold">
-                                    ({vendor.reviews} reviews)
+                                    (0 reviews)
                                 </span>
                             </div>
                             <Link 
-                                to={``}
-                                className=" text-center cursor-pointer hover:scale-103 transition-all active:scale-100 bg-[var(--primary-color)] text-white px-4 py-2 rounded-[10px] mt-4">
-                                view product
+                                to={`/vendors/${vendor.slug}`}
+                                className=" text-center mt-auto cursor-pointer hover:scale-103 transition-all active:scale-100 bg-[var(--primary-color)] text-white px-4 py-2 rounded-[10px]">
+                                View Catalog
                             </Link>
                         </div>
                     ))}
                 </div>
-            ) : (
-               <EmptyListUI 
+            )}
+
+            {savedVendorsList.length === 0 && !loading &&
+                <EmptyListUI 
                     heading={"Opps, You have no saved vendors"}
                     subheading={"Start Saving favorite vendors to see them here"}
                 />
-            )}
+            }
         </div>
     );
 }
