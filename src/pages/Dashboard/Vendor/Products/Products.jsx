@@ -150,7 +150,7 @@ const Products = () => {
                                 ? (<span>
                                     <InlineSpinner className="px-2" /> Deleting ...
                                   </span>)
-                                :"Delete"
+                                : "Delete"
                             }
                         </Button>
                     </div>
@@ -190,7 +190,7 @@ const Products = () => {
                     <p className="text-gray-500 text-sm">Here's a list of your products</p>
                 </div>
                 <Link
-                    to="../create"
+                    to="/dashboard/vendor/create"
                     className="bg-[var(--primary-color)] transition-colors duration-300 h-fit px-3 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
                 >
                     <span className="text-2xl md:pr-2">+</span> {isWide && "Product"}

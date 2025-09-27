@@ -181,13 +181,13 @@ const Overview = () => {
                     <p className="text-md">Here's your dashboard overview</p>
                 </div>
                 <Link
-                    to="../create"
+                    to="create"
                     className="bg-[var(--primary-color)] transition-colors duration-300 h-fit px-3 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
                 >
                     <span className="text-2xl md:pr-2">+</span> {isWide && "Product"}
                 </Link>
             </div>
-            
+
             {/* cards */}
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 {salesDiv.map((item, index) => (
@@ -260,6 +260,42 @@ const Overview = () => {
             </div>      
                
             <div className="flex mt-5 shadow-md p-4 sm:p-10 border-2 rounded-md border-gray-400/10 flex-col">
+                <div><h2 className="font-bold sm:text-xl">Bank Verification</h2></div>
+                {sessionUserData.account_number === "" || sessionUserData.bank_name === "" ? (
+                    <div className="mt-5 text-sm sm:text-base flex items-center gap-5 ">
+                        <div className="p-3 bg-red-100 text-red-600 rounded-[50%]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p className="text-red-500 font-semibold">Unverified</p>
+                            <p className="font-medium text-sm sm:text-base">Your bank details have not been verified</p>
+                            <Link
+                                to="kyc#AddBank"
+                                className="text-[var(--primary-color)] underline text-xs ease-transition hover:font-semibold"
+                            >
+                                Click here to update bank details.
+                            </Link>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="mt-5 text-sm sm:text-base flex items-center gap-5 ">
+                        <div className="p-3 bg-[#2FA21133] text-[#2FA211] rounded-[50%]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p className="text-[#2FA211] font-semibold">Verified</p>
+                            <p className="font-medium">Your bank details has been successfully verified</p>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* KYC Verification Status */}
+            {/* <div className="flex mt-5 shadow-md p-4 sm:p-10 border-2 rounded-md border-gray-400/10 flex-col">
                 <div><h2 className="font-bold sm:text-xl">KYC Status</h2></div>
                 <div className="mt-5 text-sm sm:text-base flex items-center gap-5 ">
                     <div className="p-3 bg-[#2FA21133] text-[#2FA211] rounded-[50%]">
@@ -272,7 +308,7 @@ const Overview = () => {
                         <p className="font-medium">Your KYC document has been successfully verified</p>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }

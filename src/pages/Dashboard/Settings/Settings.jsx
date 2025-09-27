@@ -79,7 +79,7 @@ const Settings = () => {
                 />
             )}
             <h1 className="text-lg md:text-2xl font-bold">Settings</h1>
-            <div className="mt-10   border-1 border-[#0000001A] p-7 rounded-lg shadow-md">
+            <div className="mt-10 border-1 border-[#0000001A] p-7 rounded-lg shadow-md">
                 <form onSubmit={handlePasswordSubmit}>
                     <h2 className="text-[22px] font-semibold">Change password</h2>
                     <div className="mt-7">
@@ -128,14 +128,12 @@ const Settings = () => {
                             required 
                         />
                     </div>
-                    <div className="flex w-full mt-5 p-2">
-                        <button
-                            className="bg-[var(--primary-color)] active:scale-95 cursor-pointer rounded-[10px] text-white ml-auto px-12 py-4  hover:bg-[var(--primary-color)] transition-all duration-300"
-                            type="submit"
-                        >
-                            Update Password
-                        </button>
-                    </div>
+                    <button
+                        className="bg-[var(--primary-color)] my-4 active:scale-95 cursor-pointer rounded-[10px] text-white ml-auto px-4 py-2  hover:bg-[var(--primary-color)] transition-all duration-300"
+                        type="submit"
+                    >
+                        Update Password
+                    </button>
                 </form>
 
                 {/* Bank details */}
