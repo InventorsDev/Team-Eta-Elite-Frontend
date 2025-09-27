@@ -166,7 +166,7 @@ const Overview = () => {
     ];
 
     return (
-        <>
+        <div className="overflow-x-hidden" >
             {toast && (
                 <Toast 
                     message={toast.message}
@@ -174,12 +174,13 @@ const Overview = () => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <div className=" md:flex justify-center items-center">
+
+            <div className="flex gap-5 mt-2 md:mt-0  flex-wrap justify-center items-center">
                 <div className="space-y-2">
                     <h1 className="text-3xl text-[var(--primary-color)] font-bold">Welcome, {name}!</h1>
                     <p className="text-md">Here's your dashboard overview</p>
                 </div>
-                <div className="ml-auto md:text-wrap text-nowrap justify-center items-center flex mt-4 md:mt-0  ">
+                <div className="md:ml-auto md:text-wrap text-nowrap justify-center items-center flex mt-4 md:mt-0  ">
                     <Link
                         to="../create"
                         className="bg-[var(--primary-color)] transition-colors duration-300 px-4 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
@@ -192,6 +193,7 @@ const Overview = () => {
                 </div>
             </div>
             {/* cards */}
+
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 {salesDiv.map((item, index) => (
                     <div key={index} className="bg-white border-2 border-gray-400/10 p-6 rounded-lg shadow-md flex items-center">
@@ -267,7 +269,7 @@ const Overview = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 

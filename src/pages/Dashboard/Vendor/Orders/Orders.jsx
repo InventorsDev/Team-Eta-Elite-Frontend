@@ -191,7 +191,7 @@ const Orders = () => {
                 </Modal>
             )}
 
-            <header className="flex justify-between items-center gap-2">
+            <header className="flex mt-2 md:mt-0 justify-between items-center gap-2">
                 <div className="space-y-1">
                     <h1 className="font-bold text-2xl">My Orders</h1>
                     <p className="text-gray-500 text-sm">Here's a list of product requests</p>

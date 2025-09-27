@@ -105,7 +105,10 @@ const SavedVendors = () => {
                     onClose={() => setToast(null)}
                 />
             )}
-            <h1 className="text-2xl font-bold">Saved Vendors</h1>
+
+            <div className="mt-2 md:mt-0">
+                <h1 className="text-2xl font-bold">Saved Vendors</h1>
+            </div>
             
             {loading && (
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
