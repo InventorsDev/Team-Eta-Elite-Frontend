@@ -26,11 +26,17 @@ const Sidebar = ({ forVendor, isOpen, onClose }) => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    useEffect(() => {
+        if (window.innerWidth < 768) {
+            onClose();
+        }
+    }, [pathname]);
+
     const vendorDashboardLinks = [
         { name: "Dashboard", path: `/dashboard/vendor/`, icon: "/icons/sidebar/dashboard.svg" },
         { name: "My Products", path: `/dashboard/vendor/products`, icon: "/icons/sidebar/my_products.svg" },
         { name: "My Orders", path: `/dashboard/vendor/orders`, icon: "/icons/sidebar/orders.svg" },
-        { name: "Create Product", path: `/dashboard/vendor/create`, icon: "/icons/sidebar/product.svg" },
+        { name: "Add Product", path: `/dashboard/vendor/create`, icon: "/icons/sidebar/product.svg" },
         { name: "KYC Verification", path: `/dashboard/vendor/kyc`, icon: "/icons/sidebar/kyc.svg" },
         { name: "Settings", path: `/dashboard/vendor/settings`, icon: "/icons/sidebar/settings.svg" },
     ];
@@ -43,14 +49,12 @@ const Sidebar = ({ forVendor, isOpen, onClose }) => {
 
     return (
         <div>
-            {/* Hamburger Button (only mobile) */}
-        
             {/* Sidebar */}
             <nav
                 id='Sidebar'
                 className={`
                     bg-[var(--primary-color)] z-40 text-white 
-                    w-[280px] md:w-[320px] p-12 pl-0 
+                    w-[270px] md:w-[320px] p-12 pl-0 
                     fixed top-0 left-0 h-[100dvh] 
                     flex flex-col transform transition-transform duration-300 ease-in-out
                     ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
@@ -83,7 +87,6 @@ const Sidebar = ({ forVendor, isOpen, onClose }) => {
                     </h1>
                 </div>
 
-
                 {/* Links */}
                 <ul className="my-8 space-y-6 flex-1 ">
                     {(forVendor ? vendorDashboardLinks : buyerDashboardLinks).map((link) => (
@@ -94,7 +97,7 @@ const Sidebar = ({ forVendor, isOpen, onClose }) => {
                                 hover:scale-[105%] hover:transition-transform hover:duration-200 hover:ease-in-out
                             `}
                         >
-                            <Link to={link.path} className="flex items-center gap-2">
+                            <Link to={link.path} className="flex items-center text-sm sm:text-base gap-2">
                                 <img src={link.icon} alt={link.name} className="w-5 h-5" />
                                 {link.name}
                             </Link>

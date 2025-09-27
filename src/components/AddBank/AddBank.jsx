@@ -46,7 +46,7 @@ const AddBank = () => {
             />
         )}
 
-        <h2 className="text-[22px] font-semibold">Add Bank Account</h2>
+        <h2 className="text-lg md:text-xl font-semibold">Add Bank Account</h2>
         <div className="mt-7">
             <label htmlFor="account-name" 
                 className="text-[#000000CC] font-semibold block mb-2">

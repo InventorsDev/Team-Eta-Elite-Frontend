@@ -28,9 +28,6 @@ const Orders = () => {
     }, []);
 
     useEffect(() => {
-        console.log(selectedOrder.id);
-
-        // Fetch delivery code from "order_codes" table
         setLoadingDeliveryCode(true);
         const fetchDeliveryCode = async () => {
             const { data, error } = await supabase
@@ -101,9 +98,9 @@ const Orders = () => {
                     {/* x-mark to close modal */}
                     <div 
                         onClick={() => setShowDeliveryConfirmationModal(false)}
-                        className="p-2 absolute top-2 right-2 rounded-full bg-gray-200 cursor-pointer text-black font-semibold active:scale-[95%]"
+                        className="p-1 sm:p-2 absolute top-2 right-2 rounded-full bg-gray-200 cursor-pointer text-black font-semibold active:scale-[95%]"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-3 sm:size-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
                     </div>
@@ -111,7 +108,7 @@ const Orders = () => {
                     <h1 className="text-lg font-semibold">
                         Confirm product delivery of <b className="font-extrabold">{selectedOrder.product_name}</b>
                     </h1>
-                    <h1 className="text-8xl text-neutral-700 tracking-widest font-bold">
+                    <h1 className="text-4xl sm:text-8xl text-neutral-700 tracking-widest font-bold">
                         {/* show 4 digit placeholder skeletons with pulse animation while loading delivery code */}
                         {loadingDeliveryCode ? (
                             <div className="flex gap-4">
@@ -127,9 +124,9 @@ const Orders = () => {
                             deliveryCode 
                         )}
                     </h1>
-                    <p className="flex gap-2 text-sm text-yellow-600 font-semibold">
+                    <p className="flex gap-2 text-xs sm:text-sm text-yellow-600 font-semibold">
                         {/* caution icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="hidden sm:inline size-5">
                             <path 
                                 strokeLinecap="round" strokeLinejoin="round" 
                                 d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" 
@@ -137,13 +134,13 @@ const Orders = () => {
                         </svg>
                         Only share this code with the vendor if goods are in good conditions.
                     </p>
-                    <p className="text-red-500 font-semibold text-sm">(By sharing this code, you confirm that goods are delivered)</p>
+                    <p className="text-red-500 font-semibold text-xs sm:text-sm">(By sharing this code, you confirm that goods are delivered)</p>
                 </Modal>
             )}
 
             <header className="flex justify-between mt-2 md:mt-0 items-center gap-2">
                 <div className="space-y-1">
-                    <h1 className="font-bold text-2xl">My Orders</h1>
+                    <h1 className="font-bold text-lg sm:text-2xl">My Orders</h1>
                     <p className="text-gray-500 text-sm">Here's a list of products you've requested</p>
                 </div>
             </header>

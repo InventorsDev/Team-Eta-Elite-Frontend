@@ -138,12 +138,12 @@ const Orders = () => {
 
             {showDeliveryConfirmationModal && (
                 <Modal type={"blur"}>
-                    <h1 className="text-lg font-semibold">
+                    <h1 className="sm:text-lg font-semibold">
                         Confirm the delivery code of <b className="font-extrabold">{selectedOrder.product_name} </b> 
                         ordered by <b className="font-extrabold"> {selectedOrder.buyer_email}</b>
                     </h1>
                     <p className="text-sm">
-                        Get code from your customer and confirm your delivery.
+                        Get code from your customer and confirm delivery.
                     </p>
                     <div className="mt-4 flex flex-col gap-4">
                         <div className="flex justify-center gap-2">
@@ -193,7 +193,7 @@ const Orders = () => {
 
             <header className="flex mt-2 md:mt-0 justify-between items-center gap-2">
                 <div className="space-y-1">
-                    <h1 className="font-bold text-2xl">My Orders</h1>
+                    <h1 className="font-bold text-lg md:text-2xl">My Orders</h1>
                     <p className="text-gray-500 text-sm">Here's a list of product requests</p>
                 </div>
             </header>

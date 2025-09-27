@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../../lib/supabase";
 import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
-import { useNavigate } from "react-router-dom";
 import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
+import { Link } from "react-router-dom";
 import Table from "../../../../components/Table/Table";
 import Button from "../../../../components/Button/Button";
 import Toast from "../../../../components/Toast/Toast";
@@ -20,7 +20,6 @@ const Products = () => {
     const [selectedProductName, setSelectedProductName] = useState("");
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
-    const navigate = useNavigate();
     const isWide = useWindowSize();
 
     useEffect(() => {
@@ -187,12 +186,15 @@ const Products = () => {
 
             <header className="flex justify-between flex-wrap mt-2 md:mt-0 items-center gap-2">
                 <div className="space-y-1">
-                    <h1 className="font-bold text-2xl">My Products</h1>
+                    <h1 className="font-bold text-lg md:text-2xl">My Products</h1>
                     <p className="text-gray-500 text-sm">Here's a list of your products</p>
                 </div>
-                <Button type={"bg-black"} onClick={() => navigate("/dashboard/vendor/create")}>
-                    {isWide ? "+ Upload New Product": "+ Upload"}
-                </Button>
+                <Link
+                    to="../create"
+                    className="bg-[var(--primary-color)] transition-colors duration-300 h-fit px-3 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
+                >
+                    <span className="text-2xl md:pr-2">+</span> {isWide && "Product"}
+                </Link>
             </header>
 
             {productsList.length === 0 && !loading && (

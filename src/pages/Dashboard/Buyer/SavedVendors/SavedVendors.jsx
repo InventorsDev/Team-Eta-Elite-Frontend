@@ -107,7 +107,7 @@ const SavedVendors = () => {
             )}
 
             <div className="mt-2 md:mt-0">
-                <h1 className="text-2xl font-bold">Saved Vendors</h1>
+                <h1 className="text-lg md:text-2xl font-bold">Saved Vendors</h1>
             </div>
             
             {loading && (
@@ -125,10 +125,10 @@ const SavedVendors = () => {
             )}
             
             {savedVendorsList.length > 0 && !loading && (
-                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                <div className="mt-5 md:mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
                     {savedVendorsList.map((vendor) => (
                         <div key={vendor.vendor_id} className="relative border-2 mb-2 border-[#00000003]  p-6 flex flex-col rounded-[10px] shadow-md ">
-                            <h2 className="font-bold text-[20px] ">{vendor.vendor_name}</h2>
+                            <h2 className="font-bold sm:text-lg">{vendor.vendor_name}</h2>
                             <svg xmlns="http://www.w3.org/2000/svg" 
                                 fill="#0000001A" viewBox="0 0 24 24" 
                                 strokeWidth={1.5} 
@@ -142,7 +142,7 @@ const SavedVendors = () => {
                                         2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 
                                         1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                             </svg>
-                            <p className="text-neutral-500 my-2 font-normal">{vendor.description}</p>
+                            <p className="text-neutral-500 my-2 text-sm md:text-base font-normal">{vendor.description}</p>
                             <div className="flex my-5 flex-wrap items-center justify-between">
                                 {starRating({ rating: 0 })}
                                 <span className="text-neutral-500 text-[15px] font-semibold">
@@ -151,7 +151,11 @@ const SavedVendors = () => {
                             </div>
                             <Link 
                                 to={`/vendors/${vendor.slug}`}
-                                className=" text-center mt-auto cursor-pointer hover:scale-103 transition-all active:scale-100 bg-[var(--primary-color)] text-white px-4 py-2 rounded-[10px]">
+                                className="
+                                    text-sm md:text-base text-center mt-auto cursor-pointer hover:scale-103 transition-all active:scale-100 
+                                    bg-[var(--primary-color)] text-white px-4 py-2 rounded-[10px]
+                                "
+                            >
                                 View Catalog
                             </Link>
                         </div>

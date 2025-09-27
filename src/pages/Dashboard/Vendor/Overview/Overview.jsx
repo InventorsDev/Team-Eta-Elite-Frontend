@@ -175,25 +175,20 @@ const Overview = () => {
                 />
             )}
 
-            <div className="flex gap-5 mt-2 md:mt-0  flex-wrap justify-center items-center">
+            <div className="flex gap-5 mt-2 md:mt-0 justify-between items-center">
                 <div className="space-y-2">
-                    <h1 className="text-3xl text-[var(--primary-color)] font-bold">Welcome, {name}!</h1>
+                    <h1 className="text-lg sm:text-2xl md:text-3xl text-[var(--primary-color)] font-bold">Welcome, {isWide ? name: name.split(" ")[0]}!</h1>
                     <p className="text-md">Here's your dashboard overview</p>
                 </div>
-                <div className="md:ml-auto md:text-wrap text-nowrap justify-center items-center flex mt-4 md:mt-0  ">
-                    <Link
-                        to="../create"
-                        className="bg-[var(--primary-color)] transition-colors duration-300 px-4 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
-                    >
-                        <div className="flex items-center gap-2 ">
-                            <span className="text-2xl">+</span>
-                            <span> Product</span>
-                        </div>
-                    </Link>
-                </div>
+                <Link
+                    to="../create"
+                    className="bg-[var(--primary-color)] transition-colors duration-300 h-fit px-3 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
+                >
+                    <span className="text-2xl md:pr-2">+</span> {isWide && "Product"}
+                </Link>
             </div>
+            
             {/* cards */}
-
             <div className="mt-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 {salesDiv.map((item, index) => (
                     <div key={index} className="bg-white border-2 border-gray-400/10 p-6 rounded-lg shadow-md flex items-center">
@@ -247,9 +242,18 @@ const Overview = () => {
                         <p>Click the button to update your profile details like description and so on.</p>
                         <Link
                             to="../settings"
-                            className="bg-[var(--primary-color)] transition-colors duration-300 px-4 text-sm font-medium py-2 rounded-md flex justify-center text-gray-100 items-center"
+                            className="
+                                bg-[var(--primary-color)] transition-colors duration-300 px-4 text-sm font-medium py-2 rounded-md flex justify-center 
+                                text-gray-100 items-center gap-2
+                            "
                         >
-                            <span>{isWide? "Edit Profile": "Edit"}</span>
+                            <span>Edit</span>
+                            {/* Edit Icon */}
+                            {isWide && (
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                </svg>
+                            )}
                         </Link>
                     </div>     
                 </div>
