@@ -94,7 +94,7 @@ const Sidebar = ({ forVendor, isOpen, onClose }) => {
                                 hover:scale-[105%] hover:transition-transform hover:duration-200 hover:ease-in-out
                             `}
                         >
-                            <Link to={link.path} className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                            <Link to={link.path} className="flex items-center gap-2">
                                 <img src={link.icon} alt={link.name} className="w-5 h-5" />
                                 {link.name}
                             </Link>
