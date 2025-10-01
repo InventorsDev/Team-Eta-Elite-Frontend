@@ -116,7 +116,7 @@ Safelink is a web application that enables buyers and sellers to transact secure
   - The /api functions are designed for a serverless platform (e.g., Vercel). Running them locally requires additional tooling (e.g., Vercel CLI) or deploying to a compatible platform.
 - Environment configuration:
   - Missing or incorrect environment variables (Supabase URL/keys, Paystack public key) will prevent key features (auth/data/payment) from working.
-- For paystack free tier cost there is limitations:
+- For paystack free tier cost there are limitations:
   - While testing is free, production usage incurs per-transaction fees; some capabilities and higher limits typically depend on account verification and region-specific policies.
 
 ## Future improvements
