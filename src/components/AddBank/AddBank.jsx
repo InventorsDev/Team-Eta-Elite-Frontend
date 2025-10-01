@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect } from 'react';
 import Toast from '../Toast/Toast';
+import { supabase } from '../../lib/supabase';
 
 const AddBank = () => {
     const [toast, setToast] = useState(null);
@@ -31,7 +32,7 @@ const AddBank = () => {
             throw new Error(json.message || 'Failed to fetch banks');
           }
 
-          console.log("Fetched banks:", json.data);
+          // console.log("Fetched banks:", json.data);
           setBanks(json.data || []);
         } catch (err) {
           setToast({ message: `Could not load banks: ${err.message}`, type: 'error' });
@@ -57,35 +58,35 @@ const AddBank = () => {
     }, [accountNumber]);
 
     async function updateUserMetadata(payload) {
-        setLoadingUpdates(true);
+      setLoadingUpdates(true);
 
-        try {
-            const { data, error } = await supabase.auth.updateUser({
-                data: {...payload}
-            })
-    
-            if (error) {
-                console.error('Error updating user metadata:', error.message);
-                setToast({ message: `Failed to add bank: ${error.message}`, type: 'error' });
-            } else {
-                console.log('User metadata updated successfully:', data.user.user_metadata);
-                setToast({ message: 'Bank account added successfully', type: 'success' });
-            }
-        } catch (error) {
-            console.error('Unexpected error updating user metadata:', error);
-            setToast({ message: `Unexpected error: ${error.message}`, type: 'error' });
-        } finally {
-            setLoadingUpdates(false);
-        }
+      try {
+          const { data, error } = await supabase.auth.updateUser({
+              data: {...payload}
+          })
+  
+          if (error) {
+              console.error('Error updating user metadata:', error.message);
+              setToast({ message: `Failed to add bank: ${error.message}`, type: 'error' });
+          } else {
+              // console.log('User metadata updated successfully:', data.user.user_metadata);
+              setToast({ message: 'Bank account added successfully', type: 'success' });
+          }
+      } catch (error) {
+          console.error('Unexpected error updating user metadata:', error);
+          setToast({ message: `Unexpected error: ${error.message}`, type: 'error' });
+      } finally {
+          setLoadingUpdates(false);
+      }
     }
 
     // Update the resolve account handler to use our API route
     const handleResolveAccount = async () => {
-        console.log(accountNumber)
       if (accountError !== "" || accountNumber.length !== 10) {
         setToast({ message: 'Enter a valid 10-digit account number before resolving', type: 'error' });
         return;
       }
+      
       if (!selectedBankCode) {
         setToast({ message: 'Please select a bank before resolving', type: 'error' });
         return;
@@ -142,7 +143,7 @@ const AddBank = () => {
           account_name: resolvedName,
           bank_code: selectedBankCode,
           bank_name: bankName,
-          sort_code: sortCode,
+          bank_sort_code: sortCode,
         };
 
         // update supabase backend user metadata with new bank details
@@ -153,9 +154,9 @@ const AddBank = () => {
        <form onSubmit={handleAccountSubmit} id='AddBank' className="mt-10 mb-10 bg-white shadow rounded-xl p-6 space-y-6">
          {toast && (
              <Toast
-                 type={toast.type}
-                 message={toast.message}
-                 onClose={() => setToast(null)}
+                type={toast.type}
+                message={toast.message}
+                onClose={() => setToast(null)}
              />
          )}
 
@@ -166,15 +167,15 @@ const AddBank = () => {
             </label>
             <div className="flex items-center gap-3">
                <select
-                    id="bank-name"
-                    className="border-1 border-[#00000080] cursor-pointer p-2 w-full rounded-[10px]"
-                    value={selectedBankCode}
-                    onChange={(e) => {
-                        const selected = banks.find(b => String(b.code) === String(e.target.value));
-                        setSelectedBankCode(e.target.value);
-                        setbankName(selected ? selected.name : "");
-                    }}
-                    required
+                  id="bank-name"
+                  className="border-1 border-[#00000080] cursor-pointer p-2 w-full rounded-[10px]"
+                  value={selectedBankCode}
+                  onChange={(e) => {
+                      const selected = banks.find(b => String(b.code) === String(e.target.value));
+                      setSelectedBankCode(e.target.value);
+                      setbankName(selected ? selected.name : "");
+                  }}
+                  required
                 >
                     <option value="">Select Bank</option>
                     {loadingBanks ? (
@@ -206,29 +207,34 @@ const AddBank = () => {
          </div>
 
         <button
-            type="button"
-            onClick={handleResolveAccount}
-            disabled={resolving}
-            className="bg-[var(--primary-color)] text-white px-4 cursor-pointer py-2 rounded-[10px] disabled:opacity-50"
+          type="button"
+          onClick={handleResolveAccount}
+          disabled={resolving}
+          className="bg-[var(--primary-color)] text-white px-4 cursor-pointer py-2 rounded-[10px] disabled:opacity-50"
         >
-            {resolving ? 'Resolving...' : 'Resolve'}
+            {resolving ? 'Resolving...' : 'Verify'}
         </button>
 
         {/* Account holder name will be resolved from Paystack - user should not enter it */}
         <div className="mt-7">
-            <label className="text-[#000000CC] font-semibold block mb-2">Account Holder (resolved)</label>
-            <div className="p-2 w-full rounded-[10px] border-1 border-[#00000080] bg-[#f8fafc]">
-              {resolvedName ? (
-                <span className="font-medium">{resolvedName}</span>
-              ) : (
-                <span className="text-sm text-[#6b7280]">Enter account number and resolve to populate account holder</span>
-              )}
-            </div>
+          <label className="text-[#000000CC] font-semibold block mb-2">Account Holder (resolved)</label>
+          <div className="p-2 w-full rounded-[10px] border-1 border-[#00000080] bg-[#f8fafc]">
+            {resolvedName ? (
+              <span className="font-medium">{resolvedName}</span>
+            ) : (
+              <span className="text-sm text-[#6b7280]">Enter account number and resolve to populate account holder</span>
+            )}
+          </div>
         </div>
 
         <button
-            className="bg-[var(--primary-color)] my-4 active:scale-95 cursor-pointer rounded-[10px] text-white ml-auto px-12 py-3  hover:bg-[var(--primary-color)] transition-all duration-300"
-            type="submit"
+          className="
+            bg-[var(--primary-color)] my-4 active:scale-95 cursor-pointer rounded-[10px] text-white ml-auto px-12 py-3  hover:bg-[var(--primary-color)] transition-all duration-300
+            disabled:cursor-not-allowed disabled:opacity-50
+          "
+          type="submit"
+          disabled={!resolvedName || resolvedName === "" || loadingUpdates}
+          onClick={handleAccountSubmit}
         >
             {loadingUpdates ? "Updating..." :"Add Account"}
         </button>
