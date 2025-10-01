@@ -129,14 +129,6 @@ const Orders = () => {
 
     // least and most recent orders function
     const sortedOrders = sortOrder === "most" ? [...ordersList].reverse() : ordersList;
-    useEffect(() => {
-        console.log("Sorted Orders:", sortedOrders);
-        if (sortOrder === "most") {
-            console.log("Most Recent Orders Selected");
-        } else {
-            console.log("Least Recent Orders Selected");
-        }
-    }, [sortOrder, ordersList]);
      
     return (
         <div className="w-full space-y-6">
