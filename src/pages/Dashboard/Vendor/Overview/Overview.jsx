@@ -241,7 +241,7 @@ const Overview = () => {
                     <div className="mt-5 text-sm sm:text-base flex items-center gap-5 ">
                         <p>Click the button to update your profile details like description and so on.</p>
                         <Link
-                            to="../settings"
+                            to="settings"
                             className="
                                 bg-[var(--primary-color)] transition-colors duration-300 px-4 text-sm font-medium py-2 rounded-md flex justify-center 
                                 text-gray-100 items-center gap-2
@@ -288,7 +288,7 @@ const Overview = () => {
                         </div>
                         <div>
                             <p className="text-[#2FA211] font-semibold">Verified</p>
-                            <p className="font-medium">Your bank details has been successfully verified</p>
+                            <p className="font-medium">Your bank details have been successfully verified</p>
                         </div>
                     </div>
                 )}

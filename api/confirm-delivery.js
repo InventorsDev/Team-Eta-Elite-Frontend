@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       .from("orders")
       .update({
         delivery_status: "delivered",
-        escrow_status: "released",
+        escrow_status: "held",
         released_at: new Date().toISOString()
       })
       .eq("id", order_id)
@@ -64,9 +64,6 @@ export default async function handler(req, res) {
       .single();
 
     if (updateErr) throw updateErr;
-
-    // all Paystack Transfer to vendor here (server-side only)
-    // await doPaystackPayout(order);
 
     setCorsHeadersOnRes(res, req.headers.origin || "*");
     return res.status(200).json({ ok: true, order: updated });

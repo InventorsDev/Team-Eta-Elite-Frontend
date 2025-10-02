@@ -110,7 +110,7 @@ const Settings = () => {
                             </div>
                             <div>
                                 <p className="text-[#2FA211] font-semibold">Verified</p>
-                                <p className="font-medium">Your bank details has been successfully verified</p>
+                                <p className="font-medium">Your bank details have been successfully verified</p>
                             </div>
                         </div>
                     )}
