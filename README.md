@@ -8,8 +8,8 @@ Safelink is a web application that enables buyers and sellers to transact secure
 - Share a secure “safelink” payment link with the buyer
 - Pay with Paystack (buyer funds are held in escrow)
 - Order lifecycle management:
-  - Created → Funded → Delivered → Confirmed → Released
-- Confirm delivery flow to release funds to the seller
+  - Created → Delivered → Confirmed → Released
+- Confirm delivery flow to release funds to the vendor using unique code generated on order creation
 - Supabase integration for data and auth primitives
 - Responsive UI, modern build tooling (Vite), and Tailwind CSS styling
 - Lottie animations for improved UX
@@ -23,6 +23,7 @@ Safelink is a web application that enables buyers and sellers to transact secure
 ├─ api/
 │  ├─ confirm-delivery.js         # Serverless function to confirm delivery
 │  └─ create-order.js             # Serverless function to create/initiate an order
+│  └─ paystack-transfer.js        # Serverless function to transfer funds to vendor buyer
 ├─ public/
 │  ├─ fav.svg
 │  ├─ flyer.jpg
@@ -51,9 +52,9 @@ Safelink is a web application that enables buyers and sellers to transact secure
 ## Steps to run the project locally
 - Prerequisites:
   - Node.js 18+ and npm
-  - A Paystack account (to obtain a public key for test mode)
+  - A Paystack account (to obtain a public & secret key for test mode)
   - A Supabase project or local Supabase setup (optional but recommended)
-  - Optional: Vercel CLI if you want to run the serverless functions in the `api/` folder locally
+  - Vercel CLI if you want to run the serverless functions in the `api/` folder locally
 
 1) Clone and install
 - git clone https://github.com/InventorsDev/Team-Eta-Elite-Frontend.git
@@ -61,31 +62,25 @@ Safelink is a web application that enables buyers and sellers to transact secure
 - npm install
 
 2) Configure environment variables (create a .env.local file in the project root)
-- Vite exposes only variables prefixed with VITE_. Example variables you’ll likely need:
-  - VITE_SUPABASE_URL=<your_supabase_project_url>
-  - VITE_SUPABASE_ANON_KEY=<your_supabase_anon_key>
-  - VITE_PAYSTACK_PUBLIC_KEY=<your_paystack_public_key>
+- Vite exposes only variables prefixed with VITE_. The variables:
+  - VITE_SUPABASE_URL=<supabase_project_url>
+  - VITE_SUPABASE_ANON_KEY=<supabase_anon_key>
+  - VITE_PAYSTACK_PUBLIC_KEY=<paystack_public_key>
 
-3) (Optional) Run Supabase locally
-- Helpful scripts in package.json:
-  - npm run supabase:start
-  - npm run supabase:status
-  - npm run supabase:reset
-  - npm run supabase:generate-types
-- You can also point the app at a hosted Supabase project by setting the URL and ANON key.
+  - PAYSTACK_SECRET_KEY=<paystack_secret_key>
 
-4) Start the frontend
+3) Start the frontend
 - npm run dev
 - Open http://localhost:5173
 
-5) (Optional) Run API routes locally
+4) (Optional) Run API routes locally
 - The functions in /api are designed for a serverless environment (e.g., Vercel).
 - To run locally, install and use Vercel CLI:
   - npm i -g vercel
   - vercel dev
 - In development, you can:
   - Run Vite (npm run dev) in one terminal
-  - Run vercel dev in another terminal
+  - Run **vercel dev** in another terminal
 - Make sure any API URLs used in the frontend point to the local dev serverless endpoint when testing locally.
 
 ## Technology used
@@ -102,18 +97,18 @@ Safelink is a web application that enables buyers and sellers to transact secure
 - Add link here: https://your-live-deployment-url
 
 ## Link to video
-- Add link here: https://your-demo-video-url
+- https://www.loom.com/share/79972c84d8c34c95aaa28ca61bd60d79
 
 ## Link to presentation
-- Add link here: https://your-presentation-url
+- Add link here: [team-eta-elite-final-presentation](https://www.canva.com/design/DAGz0-dApSM/q1eHhIU8wqTPVTPA1kvupw/view?utm_content=DAGz0-dApSM&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6fca62d741#1)
 
 ## Limitations
 - Paystack (free/test usage) limitations:
-  - Test mode only processes simulated payments. Real transactions require going live and a verified business account.
-  - Some advanced features/limits (e.g., settlement and higher-volume processing) may require full KYC and going live.
-  - Transaction charges apply on live mode; free/test usage is primarily for development and may not reflect production settlement flows.
+  - Test mode only processes simulated payments. Real transactions require going live and a verified business account (Including having a ).
+  - Transaction charges apply on live mode; free/test usage is primarily for development and will not reflect production settlement flows.
+  - But the cost in live mode is ₦100 + 1.5% of transaction fee
 - Local development for serverless endpoints:
-  - The /api functions are designed for a serverless platform (e.g., Vercel). Running them locally requires additional tooling (e.g., Vercel CLI) or deploying to a compatible platform.
+  - The /api functions are designed for a serverless platform (e.g., Vercel). Running them locally requires additional tooling (e.g., Vercel CLI).
 - Environment configuration:
   - Missing or incorrect environment variables (Supabase URL/keys, Paystack public key) will prevent key features (auth/data/payment) from working.
 - For paystack free tier cost there are limitations:
