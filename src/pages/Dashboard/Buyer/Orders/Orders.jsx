@@ -22,6 +22,8 @@ const Orders = () => {
     });
     const [deliveryCode, setDeliveryCode] = useState("");
     const isWide = useWindowSize();
+    const [sortOrder, setSortOrder] = useState("least");
+
 
     useEffect(() => {
         fetchOrders();
@@ -83,6 +85,15 @@ const Orders = () => {
         setSelectedOrder(order);
     }
 
+    // least and most recent orders logic
+    const sortedOrders = [...ordersList].sort((a, b) => {
+        if (sortOrder === "most") {
+            return new Date(b.created_at) - new Date(a.created_at); // newest first
+        } else {
+            return new Date(a.created_at) - new Date(b.created_at); // oldest first
+        }
+    }); 
+
     return (
         <div className="w-full space-y-6">
             {toast && (
@@ -143,9 +154,18 @@ const Orders = () => {
                     <h1 className="font-bold text-lg sm:text-2xl">My Orders</h1>
                     <p className="text-gray-500 text-sm">Here's a list of products you've requested</p>
                 </div>
+                {/* slection of least and most recent orders */}
+                <select 
+                    value={sortOrder} 
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className="py-2 px-2 flex gap-1 cursor-pointer font-semibold border-2 text-gray-800 outline-0 border-gray-300 rounded-lg "
+                >
+                    <option value="least">Least Recent</option>
+                    <option value="most">Most Recent</option>
+                </select>
             </header>
 
-            {ordersList.length === 0 && !loading && (
+            {sortedOrders.length === 0 && !loading && (
                 <EmptyListUI 
                     heading={"Oops, No Orders Made Yet 😢"}
                     subheading={"Refresh to see updated list."}
@@ -154,7 +174,7 @@ const Orders = () => {
             )}
 
             <Table headers={["Date", "Vendor's Name", "Product", "Price","Delivery Status", "Actions"]}>
-                {ordersList.length > 0 && !loading && ordersList.map(order => (
+                {sortedOrders.length > 0 && !loading && sortedOrders.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
                         <td className="p-4">{formatDateTime(order.created_at).date}</td>
                         <td className="p-4">{order.vendor_name}</td>

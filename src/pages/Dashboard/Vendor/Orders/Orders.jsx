@@ -127,9 +127,15 @@ const Orders = () => {
         }
     };
 
-    // least and most recent orders function
-    const sortedOrders = sortOrder === "most" ? [...ordersList].reverse() : ordersList;
-     
+    // least and most recent orders logic
+    const sortedOrders = [...ordersList].sort((a, b) => {
+        if (sortOrder === "most") {
+            return new Date(b.created_at) - new Date(a.created_at); // newest first
+        } else {
+            return new Date(a.created_at) - new Date(b.created_at); // oldest first
+        }
+    });     
+
     return (
         <div className="w-full space-y-6">
             {toast && (
@@ -216,7 +222,7 @@ const Orders = () => {
 
             </header>
 
-            {ordersList.length === 0 && !loading && (
+            {sortedOrders.length === 0 && !loading && (
                 <EmptyListUI 
                     heading={"Oops, No Orders Made Yet 😢"}
                     subheading={"Refresh to see updated list."}
