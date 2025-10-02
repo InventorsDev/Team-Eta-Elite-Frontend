@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "../../../../lib/supabase";
+import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
+import { formatDateTime } from "../../../../utils/helpers/formatDateTime";
+import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
+import { useAuth } from "../../../../utils/hooks/useAuth";
 import Table from "../../../../components/Table/Table";
 import Toast from "../../../../components/Toast/Toast";
 import EmptyListUI from "../../../../components/EmptyListUI/EmptyListUI";
@@ -7,15 +11,13 @@ import Skeleton from "../../../../components/Skeleton/Skeleton";
 import Button from "../../../../components/Button/Button";
 import Modal from "../../../../components/Modal/Modal";
 import InlineSpinner from "../../../../components/InlineSpinner/InlineSpinner";
-import { formatToNaira } from "../../../../utils/helpers/formatToNaira";
-import { formatDateTime } from "../../../../utils/helpers/formatDateTime";
-import { useWindowSize } from "../../../../utils/hooks/useWindowSize";
 
 const Orders = () => {
     const [ordersList, setOrdersList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
     const [showDeliveryConfirmationModal, setShowDeliveryConfirmationModal] = useState(false);
+    const [loadingFundsRelease, setLoadingFundsRelease] = useState({ state: false, id: "" });
     const [selectedOrder, setSelectedOrder] = useState({
         id: "",
         product_name: "",
@@ -25,6 +27,7 @@ const Orders = () => {
     const [loadingCodeSubmission, setLoadingCodeSubmission] = useState(false);
     const inputRefs = useRef([]);
     const isWide = useWindowSize();
+    const { sessionUserData } = useAuth();
 
     useEffect(() => {
         fetchOrders();
@@ -126,6 +129,96 @@ const Orders = () => {
         }
     } 
 
+    const isCreatedMoreThanOneDayAgo = (createdAt) => {
+        if (!createdAt) return false;
+        const created = new Date(createdAt);
+        if (isNaN(created.getTime())) return false; 
+        const msInDay = 24 * 60 * 60 * 1000;
+        return (Date.now() - created.getTime()) > msInDay;
+    };
+
+    const handleFundsRelease = async (order) => {
+        if (!isCreatedMoreThanOneDayAgo(order.created_at)) {
+            setToast({
+                type: "error",
+                message: "Paystack releases funds on the next working day after a transaction"
+            });
+            return;
+        } 
+
+        // handle funds release
+        const test_account = {
+            accountNumber: "0000000000",
+            accountName: "Zenith Bank", 
+            bankCode: "057", 
+        }
+
+        const actual_receipient = {
+            accountNumber: sessionUserData.account_number,
+            accountName: sessionUserData.account_name, 
+            bankCode: sessionUserData.sort_code, 
+        }
+
+        const payload = { 
+            amount: order.amount_paid * 100, // convert to kobo
+            reason: `Purchase of item: ${order.product_name}`,
+            ...actual_receipient
+        }        
+
+        setLoadingFundsRelease({ state: true, id: order.id });
+
+        try {
+            const response = await fetch("/api/paystack-transfer", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                console.error(error);
+                setToast({
+                    type: "error",
+                    message: "Failed to withdraw funds - try again - or contact support"
+                });
+                return;
+            }
+            
+            const data = response.json();
+            
+            setToast({
+                type: "success",
+                message: "Funds have been successfully transfered to your account."
+            });
+
+            // update escrow_status to "released" in orders table
+            const { data: updatedOrder, error: updateError } = await supabase
+                .from("orders")
+                .update({ escrow_status: "released" })
+                .eq("id", order.id)
+                .select()
+                .single();
+
+            if (updateError) {
+                setToast({ type: "error", message: updateError.message || "Failed to update order status" });
+            } else {
+                fetchOrders();
+            }
+
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+            setToast({
+                type: "error",
+                message: "Failed to withdraw funds - try again - or contact support"
+            });
+            return;
+        } finally {
+            setLoadingFundsRelease({ state: false, id: order.id })
+        }
+    }
+
     return (
         <div className="w-full space-y-6">
             {toast && (
@@ -136,11 +229,20 @@ const Orders = () => {
                 />
             )}
 
+            {loadingFundsRelease.state && (
+                <Modal type="blur">
+                    <h1 className="sm:text-lg font-semibold">
+                        Loading Payment for Order ID: <span className="font-bold">{loadingFundsRelease.id}</span>
+                    </h1>
+                    <InlineSpinner size="lg" />
+                </Modal>
+            )}
+
             {showDeliveryConfirmationModal && (
                 <Modal type={"blur"}>
                     <h1 className="sm:text-lg font-semibold">
                         Confirm the delivery code of <b className="font-extrabold">{selectedOrder.product_name} </b> 
-                        ordered by <b className="font-extrabold"> {selectedOrder.buyer_email}</b>
+                        ordered by <b className="font-extrabold">{selectedOrder.buyer_email}</b>
                     </h1>
                     <p className="text-sm">
                         Get code from your customer and confirm delivery.
@@ -196,6 +298,18 @@ const Orders = () => {
                     <h1 className="font-bold text-lg md:text-2xl">My Orders</h1>
                     <p className="text-gray-500 text-sm">Here's a list of product requests</p>
                 </div>
+
+                <Button 
+                    type="bg-black"
+                    disabled={true}
+                    className="
+                        flex gap-2 w-fit sm:px-8 items-center py-2 cursor-pointer self-center border rounded bg-gray-700 hover:text-white 
+                        ease-transition disabled:opacity-50 disabled:cursor-not-allowed group
+                    "
+                >
+                    <img src="/icons/payouts/withdraw.svg" className="size-6" />
+                    <p className="text-xs sm:text-base">{isWide? "Withdraw All": "Withdraw"}</p>
+                </Button>
             </header>
 
             {ordersList.length === 0 && !loading && (
@@ -206,7 +320,7 @@ const Orders = () => {
                 /> 
             )}
 
-            <Table headers={["Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Dispute?", "Actions"]}>
+            <Table headers={["Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Actions"]}>
                 {ordersList.length > 0 && !loading && ordersList.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
                         <td className="p-4">{formatDateTime(order.created_at).date}</td>
@@ -227,24 +341,42 @@ const Orders = () => {
                                 <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">Released</span>
                             )}
                         </td>
-                        <td className="p-4">
+                        {/* <td className="p-4">
                             {order.dispute ? (
                                 <span className="text-red-500 p-2 rounded-xl bg-red-100 text-sm">Disputed</span>
                             ) : (
                                 <span className="text-green-500 p-2 rounded-xl bg-green-100 text-sm">None</span>
                             )}
-                        </td>
+                        </td> */}
                         <td className="p-4 flex gap-2 justify-center flex-col">
-                            <Button 
-                                onClick={() => handleShowConfirmDeliveryModal(order)}
-                                disabled={order.delivery_status === "delivered"}
-                                className="
-                                    px-2 py-2 cursor-pointer self-center border rounded hover:bg-gray-700 hover:text-white ease-transition disabled:opacity-50 
-                                    disabled:cursor-not-allowed
-                                "
-                            >
-                                {order.delivery_status === "delivered" ? "Delivered!": (isWide? " Delivery": "Confirm")}
-                            </Button>
+                            {order.delivery_status === "delivered" ? (
+                                <Button 
+                                    type="bg-black"
+                                    onClick={() => handleFundsRelease(order)}
+                                    disabled={order.escrow_status !== "held"}
+                                    className="
+                                        flex gap-2 w-full px-8 items-center py-2 cursor-pointer self-center border rounded bg-gray-700 hover:text-white 
+                                        ease-transition disabled:opacity-50 disabled:cursor-not-allowed group
+                                    "
+                                >
+                                    <img src="/icons/payouts/withdraw.svg" className="size-6" />
+                                    <p>
+                                        {order.status === "released" 
+                                            ? "Released!"
+                                            : (isWide? "Withdraw Funds": "Withdraw")
+                                        }</p>
+                                </Button>
+                            ): (
+                                <Button 
+                                    onClick={() => handleShowConfirmDeliveryModal(order)}
+                                    className="
+                                        px-2 py-2 cursor-pointer self-center border rounded hover:bg-gray-700 hover:text-white ease-transition disabled:opacity-50 
+                                        disabled:cursor-not-allowed
+                                    "
+                                >
+                                    {isWide? "Confirm Delivery": "Confirm"}
+                                </Button>
+                            )}
                         </td>
                     </tr> 
                 ))}

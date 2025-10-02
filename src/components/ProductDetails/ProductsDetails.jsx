@@ -296,7 +296,17 @@ const ProductsDetails = ({ productId, vendorName, vendorId }) => {
                             <h1 className="leading-[40px] text-2xl sm:text-4xl text-gray-900 font-extrabold">{productDetails?.name}</h1>
                             <p id="product-description" className="leading-loose text-justify sm:leading-[38px] font-headings">{productDetails?.description}</p>
                             <p><b>Vendor Name:</b>  {vendorName}</p>
-                            <p><b>Expected delivery:</b>  5 - 7 days</p>
+                            <p><b>Expected delivery:</b>  Within 14 days (else funds will be returned to you)</p>
+                            <p className="flex gap-2 text-xs sm:text-sm text-yellow-600 font-semibold">
+                                {/* caution icon */}
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="hidden sm:inline size-5">
+                                    <path 
+                                        strokeLinecap="round" strokeLinejoin="round" 
+                                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" 
+                                    />
+                                </svg>
+                                Handle delivery fee payments outside the platform for now.
+                            </p>
                             <div id="price-buy" className="flex flex-col sm:flex-row gap-4 w-full justify-between">
                                 <h1 className="font-bold sm:text-4xl text-gray-600">{!isWide? "Price:": ""} {formatToNaira(productDetails?.price)}</h1>
                                 <Button 

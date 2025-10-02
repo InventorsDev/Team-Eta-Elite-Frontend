@@ -2,7 +2,7 @@ const Modal = (props) => {
     const { type, className, ...rest } = props;
     return (
         <div id='Modal' className={`
-            fixed z-20 top-0 left-0 w-full h-full min-screen flex justify-center items-center
+            fixed z-50 top-0 left-0 w-full h-full min-screen flex justify-center items-center
             ${type === "blur"? "backdrop-blur-md": "backdrop-brightness-[.2]"}
         `}>
             <div id="ModalContent" {...rest} className={`

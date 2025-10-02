@@ -37,7 +37,7 @@ const Sidebar = ({ forVendor, isOpen, onClose }) => {
         { name: "My Products", path: `/dashboard/vendor/products`, icon: "/icons/sidebar/my_products.svg" },
         { name: "My Orders", path: `/dashboard/vendor/orders`, icon: "/icons/sidebar/orders.svg" },
         { name: "Add Product", path: `/dashboard/vendor/create`, icon: "/icons/sidebar/product.svg" },
-        { name: "KYC Verification", path: `/dashboard/vendor/kyc`, icon: "/icons/sidebar/kyc.svg" },
+        { name: "Bank & KYC", path: `/dashboard/vendor/kyc`, icon: "/icons/sidebar/kyc.svg" },
         { name: "Settings", path: `/dashboard/vendor/settings`, icon: "/icons/sidebar/settings.svg" },
     ];
 
