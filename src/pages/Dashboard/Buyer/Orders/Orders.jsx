@@ -173,9 +173,10 @@ const Orders = () => {
                 /> 
             )}
 
-            <Table headers={["Date", "Vendor's Name", "Product", "Price","Delivery Status", "Actions"]}>
+            <Table headers={["ID", "Date", "Vendor's Name", "Product", "Price","Delivery Status", "Actions"]}>
                 {sortedOrders.length > 0 && !loading && sortedOrders.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
+                        <td className="p-4">{order.id}</td>
                         <td className="p-4">{formatDateTime(order.created_at).date}</td>
                         <td className="p-4">{order.vendor_name}</td>
                         <td className="p-4">{order.product_name}</td>
