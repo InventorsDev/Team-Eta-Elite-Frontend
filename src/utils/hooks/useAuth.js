@@ -15,7 +15,11 @@ export function useAuth() {
         phone_verified: false,
         role: "",
         sub: "",
-        slug: ""
+        slug: "",
+        account_name: "",
+        account_number: "",
+        bank_name: "",
+        bank_sort_code: ""
     });
     const [logoutState, setLogoutState] = useState({
         loading: false,
@@ -30,7 +34,7 @@ export function useAuth() {
     async function checkAuth() {
         try {
             const { data: { session } } = await supabase.auth.getSession();
-            
+            console.log(session)
             if (!session) {
                 if (pathname === "/login") setLoadingSession(false);
                 if (pathname.includes("dashboard")) navigate("/login");

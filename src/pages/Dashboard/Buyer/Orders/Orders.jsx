@@ -126,7 +126,7 @@ const Orders = () => {
                                 {[...Array(4).keys()].map(index => (
                                     <div 
                                         key={index} 
-                                        className="w-16 h-24 bg-gray-300 rounded-lg animate-pulse"
+                                        className="w-12 h-16 sm:w-16 sm:h-24 bg-gray-300 rounded-lg animate-pulse"
                                     ></div>
                                 ))}
                             </div>
