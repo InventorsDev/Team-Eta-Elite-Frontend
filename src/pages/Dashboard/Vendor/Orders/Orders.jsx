@@ -27,6 +27,7 @@ const Orders = () => {
     const [loadingCodeSubmission, setLoadingCodeSubmission] = useState(false);
     const inputRefs = useRef([]);
     const isWide = useWindowSize();
+    const [sortOrder, setSortOrder] = useState("least");
     const { sessionUserData } = useAuth();
 
     useEffect(() => {
@@ -127,7 +128,16 @@ const Orders = () => {
             setLoadingCodeSubmission(false);
             setCode(["", "", "", ""]);
         }
-    } 
+    };
+
+    // least and most recent orders logic
+    const sortedOrders = [...ordersList].sort((a, b) => {
+        if (sortOrder === "most") {
+            return new Date(b.created_at) - new Date(a.created_at); // newest first
+        } else {
+            return new Date(a.created_at) - new Date(b.created_at); // oldest first
+        }
+    });     
 
     const isCreatedMoreThanOneDayAgo = (createdAt) => {
         if (!createdAt) return false;
@@ -299,20 +309,22 @@ const Orders = () => {
                     <p className="text-gray-500 text-sm">Here's a list of product requests</p>
                 </div>
 
-                <Button 
-                    type="bg-black"
-                    disabled={true}
-                    className="
-                        flex gap-2 w-fit sm:px-8 items-center py-2 cursor-pointer self-center border rounded bg-gray-700 hover:text-white 
-                        ease-transition disabled:opacity-50 disabled:cursor-not-allowed group
-                    "
-                >
-                    <img src="/icons/payouts/withdraw.svg" className="size-6" />
-                    <p className="text-xs sm:text-base">{isWide? "Withdraw All": "Withdraw"}</p>
-                </Button>
+                {/* SELECT ORDER  */}
+                <div className="">
+                    <select 
+                        className="py-2 px-2 flex gap-1 cursor-pointer font-semibold border-2 text-gray-800 outline-0 border-gray-300 rounded-lg " 
+                        id="order-sort"
+                        value={sortOrder}
+                        onChange={(e)=> setSortOrder(e.target.value)}
+                    >
+                        <option value="least">Least Recent</option>
+                        <option value="most">Most Recent</option>
+                    </select>
+                </div>
+
             </header>
 
-            {ordersList.length === 0 && !loading && (
+            {sortedOrders.length === 0 && !loading && (
                 <EmptyListUI 
                     heading={"Oops, No Orders Made Yet 😢"}
                     subheading={"Refresh to see updated list."}
@@ -321,7 +333,7 @@ const Orders = () => {
             )}
 
             <Table headers={["Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Actions"]}>
-                {ordersList.length > 0 && !loading && ordersList.map(order => (
+                {sortedOrders.length > 0 && !loading && sortedOrders.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
                         <td className="p-4">{formatDateTime(order.created_at).date}</td>
                         <td className="p-4">{order.buyer_email}</td>
