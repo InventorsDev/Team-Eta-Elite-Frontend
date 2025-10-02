@@ -93,9 +93,18 @@ Safelink is a web application that enables buyers and sellers to transact secure
 - ESLint 9 for linting
 - Utility libraries: bcryptjs, dotenv, slugify
 
+## Test Login Details
+For **Vendor**: 
+  Email: ```omoniyiopemipo84@gmail.com```
+  Password: ```Password@1```
+  
+For **Buyer**: 
+  Email: ```omoniyiopemipo8@gmail.com```
+  Password: ```Password@1```
+
 ## Link to live application
 
-https://team-eta-elite-frontend-ismi.vercel.app/
+[https://team-eta-elite-frontend-ismi.vercel.app/](https://team-eta-elite-frontend.vercel.app/)
 
 ## Video demo / presentation
 
