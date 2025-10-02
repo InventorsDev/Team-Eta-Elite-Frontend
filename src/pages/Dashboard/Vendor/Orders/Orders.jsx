@@ -320,9 +320,10 @@ const Orders = () => {
                 /> 
             )}
 
-            <Table headers={["Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Actions"]}>
+            <Table headers={["ID", "Date", "Buyer", "Product", "Amount", "Delivery Status", "Escrow Status", "Actions"]}>
                 {ordersList.length > 0 && !loading && ordersList.map(order => (
                     <tr key={order.id} className="border-t-2 border-gray-200 text-gray-600">
+                        <td className="p-4">{order.id}</td>
                         <td className="p-4">{formatDateTime(order.created_at).date}</td>
                         <td className="p-4">{order.buyer_email}</td>
                         <td className="p-4">{order.product_name}</td>
