@@ -94,17 +94,19 @@ Safelink is a web application that enables buyers and sellers to transact secure
 - Utility libraries: bcryptjs, dotenv, slugify
 
 ## Link to live application
-- Add link here: https://your-live-deployment-url
 
-## Link to video
-- https://www.loom.com/share/79972c84d8c34c95aaa28ca61bd60d79
+https://team-eta-elite-frontend-ismi.vercel.app/
 
-## Link to presentation
-- Add link here: [team-eta-elite-final-presentation](https://www.canva.com/design/DAGz0-dApSM/q1eHhIU8wqTPVTPA1kvupw/view?utm_content=DAGz0-dApSM&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6fca62d741#1)
+## Video demo / presentation
+
+https://www.loom.com/share/79972c84d8c34c95aaa28ca61bd60d79
+
+## Final presentation file
+[team-eta-elite-final-presentation](https://www.canva.com/design/DAGz0-dApSM/q1eHhIU8wqTPVTPA1kvupw/view?utm_content=DAGz0-dApSM&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6fca62d741#1)
 
 ## Limitations
 - Paystack (free/test usage) limitations:
-  - Test mode only processes simulated payments. Real transactions require going live and a verified business account (Including having a ).
+  - Test mode only processes simulated payments. Real transactions require going live and a verified business account (Including having a SON registration certficate for transfers).
   - Transaction charges apply on live mode; free/test usage is primarily for development and will not reflect production settlement flows.
   - But the cost in live mode is ₦100 + 1.5% of transaction fee
 - Local development for serverless endpoints:
