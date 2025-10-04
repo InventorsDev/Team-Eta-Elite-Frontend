@@ -1,9 +1,11 @@
 # Safelink — Escrow-powered secure transactions between buyers and sellers
 
 ## Description of the project
-Safelink is a web application that enables buyers and sellers to transact securely using an escrow flow. A seller creates a product catalog and shares the public link with the buyer. The buyer funds an order (via Paystack), and funds are held in escrow until delivery is confirmed. Once the buyer confirms delivery, funds are released to the seller which solves the issue of trust in online transactions (vendors get more customers from a market population of 115m and buyers get protection on their purchase). The project is built with React (Vite), integrates Paystack for payments, and uses Supabase for data/auth and supporting services. It also includes lightweight serverless APIs (e.g., create order, confirm delivery) for core escrow actions.
+Safelink is a web application that enables buyers and sellers to transact securely using an escrow flow. A seller creates a product catalog and shares the public link with the buyer. The buyer funds an order (via Paystack), and funds are held in escrow until delivery is confirmed. Once the buyer confirms delivery, funds are released to the seller which solves the issue of trust in online transactions. Through this, vendors get more customers from the Nigerian online market population of about 115m people (Novatia Consulting, 2024) and buyers get protection on their purchases. The project is built with React (Vite), integrates Paystack for payments, and uses Supabase for data/auth and supporting services. It also includes lightweight serverless APIs (e.g., create order, confirm delivery) for core escrow actions.
 
-A cron job is setup that checks if an order has exceeded 14 days without being delivered - if so, funds are returned to the buyer via Paystack Transfer API.
+A cron job is setup that checks if an order has exceeded 14 days without being delivered - if so, funds are returned to the buyer via Paystack Transfer API. If delivered via PIN confirmation, then the Vendor can withdraw his/her money.
+
+**Link to research** - https://novatiaconsulting.com/e-commerce-market-research-in-nigeria/
  
 ## Features available
 - Create escrow-backed orders with clear terms and amount
