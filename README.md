@@ -1,8 +1,10 @@
 # Safelink — Escrow-powered secure transactions between buyers and sellers
 
 ## Description of the project
-Safelink is a web application that enables buyers and sellers to transact securely using an escrow flow. A seller creates an order and shares a secure payment link with the buyer. The buyer funds the order (via Paystack), and funds are held in escrow until delivery is confirmed. Once the buyer confirms delivery, funds are released to the seller. The project is built with React (Vite), integrates Paystack for payments, and uses Supabase for data/auth and supporting services. It also includes lightweight serverless APIs (e.g., create order, confirm delivery) for core escrow actions.
+Safelink is a web application that enables buyers and sellers to transact securely using an escrow flow. A seller creates a product catalog and shares the public link with the buyer. The buyer funds an order (via Paystack), and funds are held in escrow until delivery is confirmed. Once the buyer confirms delivery, funds are released to the seller which solves the issue of trust in online transactions (vendors get more customers from a market population of 115m and buyers get protection on their purchase). The project is built with React (Vite), integrates Paystack for payments, and uses Supabase for data/auth and supporting services. It also includes lightweight serverless APIs (e.g., create order, confirm delivery) for core escrow actions.
 
+A cron job is setup that checks if an order has exceeded 14 days without being delivered - if so, funds are returned to the buyer via Paystack Transfer API.
+ 
 ## Features available
 - Create escrow-backed orders with clear terms and amount
 - Share a secure “safelink” payment link with the buyer
